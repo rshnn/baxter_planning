@@ -21,6 +21,10 @@
 #include <boost/range/adaptor/map.hpp>
 #include <pluginlib/class_list_macros.h>
 
+#include <time.h>
+#include <iostream>
+#include <cstdio>
+#include <ctime>
 
 #include "prx/planning/communication/planning_comm.hpp"
 
@@ -172,7 +176,6 @@ namespace prx
                 state_t* target_object = object_space->alloc_point(); 
                 object_space->copy_vector_to_point(object_target_vec, target_object); // The point that that stores the target state of the object, coming from input
                 PRX_DEBUG_COLOR("Initial state of object::: "<<object_space->print_point(initial_object, 4), PRX_TEXT_GREEN);  
-                manipulation_query->plan.clear();
 
 
                 // AI_PRX_TODO
@@ -193,6 +196,7 @@ namespace prx
                     target_object 
                     );
 
+                manipulation_query->plan.clear();
 
 
 
@@ -221,7 +225,21 @@ namespace prx
 
 
                 planners[manipulation_task_planner_name]->link_query(manipulation_query); //The query has to be linked to the task planner. Changing the query and linking again will make it execute initialize the task planner with the new query
+
+                /* Timer Start */
+                std::clock_t start;
+                double duration;
+                start = std::clock();
+                printf("\nTIMER START\n", duration);
+
+                /* RESOLVING PLANNING QUERY */
                 planners[manipulation_task_planner_name]->resolve_query(); //The resolve query makes the task planner actually solve the problem and populate the manipulation_query->plan with a viable plan to solve the problem. If the size of the plan is 0 then a solution could not be found.
+
+                /* Timer End */                
+                duration = (std::clock() - start) / (double) CLOCKS_PER_SEC;
+                printf("\nTIMER END: \t%f\n", duration);
+
+
                 manipulation_model->convert_plan(in_query->plan, manipulator->get_control_space(), manipulation_query->plan, manipulation_model->get_control_space()); //This converts the plan returned in the manipulation query to the plan that the in_query aggregates and appends it to the end of in_query->plan. Calling this function multiple times with different plans will grow the in_query->plan
                 
                 if(manipulation_query->plan.size()>0)

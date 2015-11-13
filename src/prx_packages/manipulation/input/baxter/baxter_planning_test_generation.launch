@@ -42,7 +42,7 @@
         serialize_flag: true
         planners:
           left_arm_motion_planner:
-            serialize_file: "left_arm_graph_1000.roadmap"
+            serialize_file: "left_arm_graph_1000_testing.roadmap"
   </rosparam>
 
 

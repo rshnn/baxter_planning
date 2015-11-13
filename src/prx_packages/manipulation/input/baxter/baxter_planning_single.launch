@@ -221,7 +221,7 @@
       elements:
         criterion1:
           type: iteration_criterion
-          condition: 2000
+          condition: 1000
     heuristic_search:
       type: prm_astar
   </rosparam>
@@ -241,7 +241,7 @@
             visualization_bodies: ["simulator/manipulator/head_sponge"]
             visualize_graph: false
             visualize_solutions: false
-            deserialize_file: "left_arm_graph_2000.roadmap"
+            deserialize_file: "left_arm_graph_1000.roadmap"
             space_name: "left_arm_planning"
             planning_context_name: "left_arm"
             query:
@@ -256,7 +256,7 @@
             type: uniform_sampler
           data_folders: 
             left_full_arm: "prx_packages/manipulation/input/grasp_data/baxter_parallel_gripper/"
-          max_ik_tries: 50
+          max_ik_tries: 1000
   </rosparam>
 
   <rosparam ns="planning/problems">

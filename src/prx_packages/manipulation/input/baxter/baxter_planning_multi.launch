@@ -236,7 +236,7 @@
       elements:
         criterion1:
           type: iteration_criterion
-          condition: 300
+          condition: 100
     heuristic_search:
       type: prm_astar
   </rosparam>
@@ -256,7 +256,7 @@
             visualization_bodies: ["simulator/manipulator/head_sponge"]
             visualize_graph: false
             visualize_solutions: false
-            deserialize_file: "left_arm_graph_2000.roadmap"
+            deserialize_file: "left_arm_graph_100.roadmap"
             space_name: "left_arm_planning"
             planning_context_name: "left_arm"
             query:
