@@ -269,7 +269,7 @@ namespace prx
             //            int old_num_edges_start = boost::num_edges(graph.graph);
             undirected_vertex_index_t v_start;
             boost::tie(remove_start, v_start) = add_node(input_query->get_start_state());
-            //            PRX_DEBUG_COLOR("Adding Start: " << state_space->print_point(input_query->get_start_state(),4), PRX_TEXT_BLUE)
+                       PRX_DEBUG_COLOR("Adding Start: " << state_space->print_point(input_query->get_start_state(),4), PRX_TEXT_BLUE)
             //            PRX_DEBUG_COLOR("PRM CC: " << boost::connected_components(graph.graph,graph.components) << "   |V|:" << boost::num_vertices(graph.graph) << "   |E|:" << boost::num_edges(graph.graph)  << "   k:" << k, PRX_TEXT_MAGENTA);
             //            int new_num_edges_start = boost::num_edges(graph.graph);
 
@@ -299,9 +299,9 @@ namespace prx
             unsigned num_component = boost::connected_components(graph.graph, graph.components);
             for( unsigned i = 0; i < v_goals.size() && start_valid; ++i )
             {
-                // PRX_DEBUG_COLOR("Checking goal: " << i << " with valence: " << boost::out_degree(v_goals[i], graph.graph), PRX_TEXT_CYAN);
-                // PRX_DEBUG_COLOR("Goal: " << state_space->print_point( graph[v_goals[i]]->point, 3), PRX_TEXT_LIGHTGRAY);
-                // PRX_DEBUG_COLOR("Goal is: " << v_goals[i], PRX_TEXT_LIGHTGRAY);
+                PRX_DEBUG_COLOR("Checking goal: " << i << " with valence: " << boost::out_degree(v_goals[i], graph.graph), PRX_TEXT_CYAN);
+                PRX_DEBUG_COLOR("Goal: " << state_space->print_point( graph[v_goals[i]]->point, 3), PRX_TEXT_LIGHTGRAY);
+                PRX_DEBUG_COLOR("Goal is: " << v_goals[i], PRX_TEXT_LIGHTGRAY);
                 if( graph.components[v_start] == graph.components[v_goals[i]] && validity_checker->is_valid( graph[v_goals[i]]->point ) )
                 {
                     good_to_go = true;

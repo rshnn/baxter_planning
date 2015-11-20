@@ -19,6 +19,10 @@
 #include "prx/simulation/plan.hpp"
 #include "prx/simulation/trajectory.hpp"
 #include "prx/simulation/collision_checking/collision_checker.hpp"
+#include "prx/simulation/collision_checking/pqp_collision_checker.hpp"
+#include "simulation/systems/plants/manipulator.hpp"
+#include "planning/manipulation_world_model.hpp"
+
 
 namespace prx
 {
@@ -84,6 +88,8 @@ namespace prx
              */
             virtual bool succeeded() const;
 
+            virtual const prx::util::statistics_t* get_statistics();
+
 
           protected:            
            
@@ -91,7 +97,18 @@ namespace prx
             double solution_length;
             sim::plan_t plan;
             sim::trajectory_t path;
-            sim::collision_checker_t* collision_checker;
+            sim::pqp_collision_checker_t* collision_checker;
+            prx::packages::manipulation::manipulation_world_model_t* world_model;
+            sim::plan_t output_plan;
+            sim::plan_t temp_plan;
+            sim::trajectory_t temp_trajectory;
+
+            sim::state_t* start_state;
+            sim::state_t* goal_state;
+            sim::state_t* current_state;
+
+            double time_step;
+
             /**
              * @copydoc planner_t::update_vis_info() const
              */

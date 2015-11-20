@@ -151,6 +151,11 @@ namespace prx
                 return world_model->get_simulator()->get_collision_checker();
             }
 
+            world_model_t* get_world_model()
+            {
+                return world_model;
+            }
+
             /** @brief The function for determining a state's cost */
             sim::state_cost_t state_cost;
 

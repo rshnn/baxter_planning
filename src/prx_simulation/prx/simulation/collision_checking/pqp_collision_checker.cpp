@@ -341,6 +341,17 @@ namespace prx
             return false;
         }
 
+        double pqp_collision_checker_t::transform_point(double rotation[3][3], double translation[3], double point[3], std::vector<double>& result)
+        {
+            result[0] = point[0]*rotation[0][0] + point[1]*rotation[0][1] + point[2]*rotation[0][2] + translation[0];
+            result[1] = point[0]*rotation[1][0] + point[1]*rotation[1][1] + point[2]*rotation[1][2] + translation[1];
+            result[2] = point[0]*rotation[2][0] + point[1]*rotation[2][1] + point[2]*rotation[2][2] + translation[2];
+            // PRX_ERROR_S("-----------------------------------------\nThe point is: "<<point[0]<<", "<<point[1]<<", "<<point[2]);
+            // PRX_INFO_S("The tform is: "<<rotation[0][0]<<","<<rotation[0][1]<<","<<rotation[0][2]<<", "<<translation[0]);
+            // PRX_INFO_S("The tform is: "<<rotation[1][0]<<","<<rotation[1][1]<<","<<rotation[1][2]<<", "<<translation[1]);
+            // PRX_INFO_S("The tform is: "<<rotation[2][0]<<","<<rotation[2][1]<<","<<rotation[2][2]<<", "<<translation[2]);
+        }
+
         double pqp_collision_checker_t::closest_points(std::vector<double>& close_pt1, std::vector<double>& close_pt2, const std::string& name1, const std::string& name2)
         {
             pqp_info_t* info1 = models_map[name1];
@@ -360,12 +371,10 @@ namespace prx
                          info2->rotation_matrix, info2->translation_matrix, info2->model,
                          0.01, PRX_ZERO_CHECK);
 
-            for( unsigned i=0; i<3; ++i)
-            {
-                close_pt1[i] = dr.p1[i];
-                close_pt2[i] = dr.p2[i];
-            }
+            transform_point(info1->rotation_matrix, info1->translation_matrix, dr.p1, close_pt1);
+            transform_point(info2->rotation_matrix, info2->translation_matrix, dr.p2, close_pt2);
 
+            
             return dr.distance;
         }
 

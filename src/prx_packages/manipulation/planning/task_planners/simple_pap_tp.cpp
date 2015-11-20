@@ -11,6 +11,8 @@
  * Email: pracsys@googlegroups.com
  */
 
+#include <iostream>
+
 #include "planning/task_planners/simple_pap_tp.hpp"
 
 #include "prx/utilities/definitions/string_manip.hpp"
@@ -20,11 +22,6 @@
 
 #include <boost/range/adaptor/map.hpp>
 #include <pluginlib/class_list_macros.h>
-
-#include <time.h>
-#include <iostream>
-#include <cstdio>
-#include <ctime>
 
 #include "prx/planning/communication/planning_comm.hpp"
 
@@ -176,11 +173,17 @@ namespace prx
                 state_t* target_object = object_space->alloc_point(); 
                 object_space->copy_vector_to_point(object_target_vec, target_object); // The point that that stores the target state of the object, coming from input
                 PRX_DEBUG_COLOR("Initial state of object::: "<<object_space->print_point(initial_object, 4), PRX_TEXT_GREEN);  
+                
 
 
                 // AI_PRX_TODO
                 // A single manipulation query is constructed. Check the manipulation_query_tp for information about the parameters, chief among which would be initial_object and target_object which specify the initial and target states. Note that initial_state, target_state implies that the manipulator ends up where is started
                 
+                /* Timer Start */
+                std::clock_t start;
+                double duration;
+                start = std::clock();
+
                 manipulation_query = 
                 new manipulation_query_t(
                     manipulation_context_name, 
@@ -200,53 +203,30 @@ namespace prx
 
 
 
-
-                //PRX_FATAL_S("Construct the correct Manipulation Query");
-                /* Replace the following declaration with correct variable names/values 
-                manipulation_query = 
-                new manipulation_query_t(
-                    Context name for manipulation, 
-                    Choose the PICK and PLACE mode, 
-                    The object pointer which to manipulate, 
-                    -1, 
-                    1, 
-                    Retraction configuration, 
-                    Initial state of the manipulator, 
-                    Target state of the manipulator, 
-                    NULL, 
-                    Initial state of the object, 
-                    Target state of the object 
-                    );
-                
-                */
-
-                
-
-
-
                 planners[manipulation_task_planner_name]->link_query(manipulation_query); //The query has to be linked to the task planner. Changing the query and linking again will make it execute initialize the task planner with the new query
-
-                /* Timer Start */
-                std::clock_t start;
-                double duration;
-                start = std::clock();
-                printf("\nTIMER START\n", duration);
-
-                /* RESOLVING PLANNING QUERY */
                 planners[manipulation_task_planner_name]->resolve_query(); //The resolve query makes the task planner actually solve the problem and populate the manipulation_query->plan with a viable plan to solve the problem. If the size of the plan is 0 then a solution could not be found.
-
-                /* Timer End */                
-                duration = (std::clock() - start) / (double) CLOCKS_PER_SEC;
-                printf("\nTIMER END: \t%f\n", duration);
-
-
                 manipulation_model->convert_plan(in_query->plan, manipulator->get_control_space(), manipulation_query->plan, manipulation_model->get_control_space()); //This converts the plan returned in the manipulation query to the plan that the in_query aggregates and appends it to the end of in_query->plan. Calling this function multiple times with different plans will grow the in_query->plan
                 
+                /* Timer End */                
+                duration = (std::clock() - start) / (double) CLOCKS_PER_SEC;
+
+		bool success = false;
                 if(manipulation_query->plan.size()>0)
                 {
                     object_space->copy_from_point(target_object);
+			success = true;
                 }
+		else if (manipulation_query->plan.size()==0) {
+			success = false;
+		}
+		else {
+			std::cout << "plan.size less than 0????" << std::endl;
+		}
 
+		std::ofstream output_file;
+		output_file.open("experiment.txt", std::ios::out | std::ios::app);
+		output_file << duration << "," << success << std::endl;
+		output_file.close();
                 
                 manipulation_model->use_context(full_manipulator_context_name);
                 waiting_for_manipulation_plan_end = false;//mutex to keep resolve_query() waiting

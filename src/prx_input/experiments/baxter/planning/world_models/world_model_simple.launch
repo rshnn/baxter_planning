@@ -1,0 +1,103 @@
+<launch>
+ <rosparam>
+  <!-- First define the mapping between simulation and world model plants -->
+  system_mapping:
+  - 
+    pair: [simulator/consumer/baxter, world_model/simulator/baxter]
+
+  consumer: simulator/consumer
+  world_model:
+    type: manipulation_world_model
+  </rosparam>
+
+  <!--  First define the embedding names you are going to use. 
+  This part of the file only specifies the default mapping function
+  for things that don't define a mapping.-->
+  <rosparam ns="world_model/planning_contexts">
+  full_space:
+    default:
+      type: full_mapping
+  left_full_arm:
+      default:
+        type: "obstacle_mapping"
+      manipulation_context_info:
+        full_arm_context_name: "left_full_arm"
+        arm_context_name: "left_arm"
+        end_effector_context_name: "left_end_effector"
+        start_link: "base"
+        end_link: "end_effector_left"
+  left_arm:
+      default:
+        type: "obstacle_mapping"
+      manipulation_context_info:
+        full_arm_context_name: "left_full_arm"
+        arm_context_name: "left_arm"
+        end_effector_context_name: "left_end_effector"
+        start_link: "base"
+        end_link: "end_effector_left"
+  left_end_effector:
+    default:
+     type: "hide_mapping"
+  </rosparam>
+
+  <rosparam ns="world_model/simulator/subsystems/baxter">
+    planning_contexts:
+      left_full_arm:
+        type: "baxter_left_full_arm_state_mapping"
+      left_arm:
+        type: "baxter_left_arm_state_mapping"
+      left_end_effector:
+        type: "baxter_left_gripper_state_mapping"
+  </rosparam>
+
+  <!-- This file is reincluded for the event where planning runs without simulation-->
+  <rosparam command="load" file="$(find prx_input)/templates/spaces/space_types.yaml"/>
+
+  <!-- Specify the internal simulator and systems the world model will use -->
+  <rosparam ns="world_model" command="load" file="$(find manipulation)/input/manipulation_simulator.yaml"/>
+
+  <!--  Set up concrete system tree. For each system with state, you can define an embedding for that state.
+  Otherwise, the default from above is used. -->
+        
+  <rosparam command="load" ns="world_model/simulator/subsystems/baxter" file="$(find manipulation)/input/baxter/baxter.yaml"/>
+
+
+  <rosparam ns="world_model/simulator/obstacles">
+    ball:
+      type: obstacle
+      geometries:
+        -
+          name: ball
+          collision_geometry:
+            type: sphere
+            radius: 0.2
+            material: red
+          config:
+            position: [0.9, 0.4, 0.9]
+            orientation: [0, 0.707106, 0, 0.707106]
+  </rosparam>
+
+  <!-- Dunny movable object required by the manipulator simulator in the environment -->
+  <rosparam command="load" ns="world_model/simulator/subsystems/obj">
+    type: movable_body
+    object_type: cup
+    max_step: 0.01
+    state_space: 
+      min: [-5.5, -5.5, -100, -1, -1, -1, -1]
+      max: [5.5, 5.5, 100, 1, 1, 1, 1]
+      scale: [0.025, 0.025, 0.05, 0.5, 0.5, 0.5, 0.5]
+    input_control_space: 
+      none: 4
+    root_geom: body
+    geometries:
+      -
+        name: body
+        collision_geometry:
+          type: sphere
+          radius: 0.01
+          material: red
+    initial_state: [0, 0, -100, 0, 0, 0, 1]
+  </rosparam>
+
+
+</launch>

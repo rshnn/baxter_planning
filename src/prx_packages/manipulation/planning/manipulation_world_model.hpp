@@ -341,6 +341,15 @@ namespace prx
                  * @param link The result configuration for the last link along the chain. 
                  */
                 virtual void FK(util::config_t& link);
+
+                /**
+                 * @brief It will return the configuration of the last link along the active chain per the manipulation context.
+                 * @details It will return the configuration of the last link along the active chain per the manipulation context.
+                 * 
+                 * @param link The result configuration for the last link along the chain. 
+                 * @param link_name The name of the link of the manipulator that we want to compute the FK.
+                 */
+                virtual void FK( util::config_t& link, std::string link_name);
                 
                 /**
                  * @brief Returns the first link and the end link for the chain that the specific manipulation context is working on. 

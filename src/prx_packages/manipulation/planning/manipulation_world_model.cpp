@@ -405,6 +405,11 @@ namespace prx
             {
                 active_manipulation_info->manipulator->FK_solver(link, active_manipulation_info->chain.second);
             }
+
+            void manipulation_world_model_t::FK( util::config_t& link, std::string link_name)
+            {
+                active_manipulation_info->manipulator->FK_solver(link, link_name);
+            }
             
             std::pair<std::string, std::string> manipulation_world_model_t::get_chain()
             {

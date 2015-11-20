@@ -25,6 +25,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake_modules/
 # catkin
 find_package( catkin REQUIRED 
               COMPONENTS roscpp rospy roslib message_generation geometry_msgs std_msgs class_loader tf prx_utilities kdl_parser)
+find_package(baxter_core_msgs)
 find_package(cmake_modules REQUIRED)
 # Eigen
 find_package(Eigen)
@@ -119,7 +120,7 @@ generate_messages(DEPENDENCIES geometry_msgs std_msgs )
 catkin_package(
   INCLUDE_DIRS "prx"
   LIBRARIES ${PROJECT_NAME}_lib
-  CATKIN_DEPENDS roscpp rospy roslib message_generation geometry_msgs std_msgs message_runtime class_loader tf prx_utilities kdl_parser
+  CATKIN_DEPENDS roscpp rospy roslib message_generation geometry_msgs std_msgs message_runtime class_loader tf prx_utilities kdl_parser baxter_core_msgs
   DEPENDS OCTAVE Boost OCTOMAP LAPACK Bullet
   )
 

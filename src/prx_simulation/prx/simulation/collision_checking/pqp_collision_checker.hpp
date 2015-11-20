@@ -353,6 +353,21 @@ namespace prx
 
             virtual bool info_in_plants();
 
+            /**
+             * Returns the closest points between two bodies in the simulation
+             *
+             * @brief Returns the closest points between two bodies in the simulation
+             *
+             * @param close_pt1 The closest point on the body name1, updated by function
+             * @param close_pt2 The closest point on the body name2, updated by function
+             * @param name1 The full slash-delimited path for the first system.
+             * @param name2 The full slash-delimited path for the second system.
+             *
+             * @return distance between the . \n
+             *         False if they are not in collision.
+             */
+            double closest_points(std::vector<double>& close_pt1, std::vector<double>& close_pt2, const std::string& name1, const std::string& name2);
+
           protected:
 
             /**
@@ -439,20 +454,10 @@ namespace prx
              */
             double get_clearance(double min_so_far, pqp_info_t* info1, pqp_info_t* info2 );
 
-            /**
-             * Returns the closest points between two bodies in the simulation
-             *
-             * @brief Returns the closest points between two bodies in the simulation
-             *
-             * @param close_pt1 The closest point on the body name1, updated by function
-             * @param close_pt2 The closest point on the body name2, updated by function
-             * @param name1 The full slash-delimited path for the first system.
-             * @param name2 The full slash-delimited path for the second system.
-             *
-             * @return distance between the . \n
-             *         False if they are not in collision.
-             */
-            double closest_points(std::vector<double>& close_pt1, std::vector<double>& close_pt2, const std::string& name1, const std::string& name2);
+            double transform_point(double rotation[3][3], double translation[3], double point[3], std::vector<double>& result);
+
+
+            
         };
 
         

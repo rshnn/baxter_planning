@@ -218,7 +218,7 @@ namespace prx
 
         void single_shot_planner_t::resolve_query()
         {
-            PRX_FATAL_S("Single shot planner does not support multiple queries");
+            // PRX_FATAL_S("Single shot planner does not support multiple queries");
         }
 
         void single_shot_planner_t::update_vis_info() const

@@ -139,6 +139,7 @@ namespace prx
                         release_object(info);
                     }
                 }
+                // PRX_STATUS_S("\r"<<state_space->print_point(state,3));
             }
 
             void manipulation_simulator_t::link_collision_list(collision_list_t* collision_list)
