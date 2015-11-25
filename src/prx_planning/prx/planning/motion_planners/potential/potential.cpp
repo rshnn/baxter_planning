@@ -118,7 +118,7 @@ namespace prx
         {
             double  etta[7] = {1, 1, 1, 1, 1, 1, 1};
             double  zeta[7] = {1, 1, 1, 1, 1, 1, 1};
-            double  roh_0 = 0.1;
+            double  roh_0 = 1.0;
             char *links[7] = {"left_arm_mount","left_upper_shoulder", "left_lower_shoulder","left_upper_elbow","left_lower_elbow", "left_upper_forearm", "left_lower_forearm"}
 
             //>>>>>>>>>>>>>>>>>>CLOSEST POINTS BETWEEN TWO BODIES
@@ -196,7 +196,7 @@ namespace prx
             vector_t obst_vector = point1-point2;
                     // std::cout << obst_distance << std::endl;
                     // std::cout << obst_vector.norm() <<std::endl;
-            if(obst_vector.norm() > roh_0){
+            if(obst_vector.norm() < roh_0){
                 double prefix = etta[0] * ((1/obst_vector.norm()) - (1/roh_0)) * (1 / (obst_vector.norm())*obst_vector.norm());
                 vector_t Force_rep = (obst_vector/obst_vector.norm()) * prefix;
             }else{
@@ -205,19 +205,17 @@ namespace prx
 
             //>>>>>>>>>>>>>>>>>>TORQUE CALCULATIONS
 
-            /* ATTRACTIVE FORCE JACOBIAN */
-            
+                /* ATTRACTIVE FORCE JACOBIAN */
 
-
-            /* REPULSIVE FORCE JACOBIAN */
+                /* REPULSIVE FORCE JACOBIAN */
 
 
             //>>>>>>>>>>>>>>>>>>CREATING PLANS FROM INDIVIDUAL CONTROLS
             //The controls are angular velocities on the joints.
             //Once you have the control c, for time_step(=simulation::simulation_step) 
             //Create a plan with only that control
-            //temp_plan.clear();
-            //temp_plan.copy_onto_back(c,time_step);
+            // temp_plan.clear();
+            // temp_plan.copy_onto_back(c,time_step);
 
             //>>>>>>>>>>>>>>>>>>PROPAGATING PLANS TO FIND THE REACHED STATE
             //If you have a plan and want to apply the control sequence to a state, the propagate returns the trajectory this would generate
