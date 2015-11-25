@@ -116,6 +116,11 @@ namespace prx
 
         void potential_t::step()
         {
+            double  etta[7] = {1, 1, 1, 1, 1, 1, 1};
+            double  zeta[7] = {1, 1, 1, 1, 1, 1, 1};
+            double  roh_0 = 0.1;
+            char *links[7] = {"left_arm_mount","left_upper_shoulder", "left_lower_shoulder","left_upper_elbow","left_lower_elbow", "left_upper_forearm", "left_lower_forearm"}
+
             //>>>>>>>>>>>>>>>>>>CLOSEST POINTS BETWEEN TWO BODIES
             //Call the collision checker with the two points and the valid names of the two bodies
             //Dist stores the distance between the points
@@ -133,22 +138,86 @@ namespace prx
             //>>>>>>>>>>>>>>>>>>FK OF LINKS
             //The world model provides the FK interface for the current active manipulator. In this case there is only one manipulator, the Baxter.
             //The FK function expects the link name(not the full path) and returns the SE3 configuration of the link. 
-            util::config_t config;
-            world_model->FK(config, "left_lower_elbow");
-            PRX_WARN_S(config);
-            
-            
+            util::config_t curr_config;
+            world_model->FK(curr_config, "left_lower_elbow");
+            PRX_WARN_S(curr_config);
+
+
             //>>>>>>>>>>>>>>>>>>DISTANCE CALCULATIONS
-            //metric->distance_function(current_state, goal_state)
+            double distance1 = metric->distance_function(current_state, goal_state);
             //This function returns the distance between two points in the state_space of the motion planner where the metric is defined.
             
+
+
+            // std::cout << state_space->print_point(current_state, 3) << std::endl;
+            // std::cout << state_space->print_point(goal_state, 3) << std::endl;
+            // std::cout << *state_space << std::endl;
+
+
+            //>>>>>>>>>>>>>>>>>>FORCE CALCULATIONS
+
+            /* ATTRACTIVE FORCE */
+
+            //Finding configuration of goal_state 
+            util::config_t goal_config;
+            state_space->copy_from_point(goal_state);
+            world_model->FK(goal_config, "left_lower_elbow");
+            PRX_WARN_S(goal_config);
+            //Change it back cause...idunno
+            state_space->copy_from_point(current_state);
+
+            double goal_x;
+            double goal_y;
+            double goal_z;
+            double curr_x;
+            double curr_y;
+            double curr_z;
+            
+            goal_config.get_position(goal_x, goal_y, goal_z);
+            curr_config.get_position(curr_x, curr_y, curr_z);
+                    std::cout << "Curr origin: " << curr_x << curr_y << curr_z << std::endl;
+                    std::cout << "Goal origin: " << goal_x << goal_y << goal_z << std::endl;
+
+            //Vectors that represent the point of the current origin and goal origin
+            vector_t curr_point = vector_t(curr_x, curr_y, curr_z);
+            vector_t goal_point = vector_t(goal_x, goal_y, goal_z);
+            
+            //Vector representing the distance between curr and goal
+            vector_t goal_distance = curr_point - goal_point;
+                    std::cout << "Goal vector: " << goal_distance << std::endl;
+                    std::cout << "Goal norm:   " << goal_distance.norm() << std::endl;
+            vector_t Force_attr = (goal_distance) * (-1)*(zeta[0]);
+
+    
+            /* REPULSIVE FORCE */
+            vector_t point1 = vector_t(pt1[0], pt1[1], pt1[2]);
+            vector_t point2 = vector_t(pt2[0], pt2[1], pt2[2]);
+            double obst_distance = point1.distance(point2);
+            vector_t obst_vector = point1-point2;
+                    // std::cout << obst_distance << std::endl;
+                    // std::cout << obst_vector.norm() <<std::endl;
+            if(obst_vector.norm() > roh_0){
+                double prefix = etta[0] * ((1/obst_vector.norm()) - (1/roh_0)) * (1 / (obst_vector.norm())*obst_vector.norm());
+                vector_t Force_rep = (obst_vector/obst_vector.norm()) * prefix;
+            }else{
+                vector_t Force_rep = vector_t(0, 0, 0);
+            }
+
+            //>>>>>>>>>>>>>>>>>>TORQUE CALCULATIONS
+
+            /* ATTRACTIVE FORCE JACOBIAN */
+            
+
+
+            /* REPULSIVE FORCE JACOBIAN */
+
 
             //>>>>>>>>>>>>>>>>>>CREATING PLANS FROM INDIVIDUAL CONTROLS
             //The controls are angular velocities on the joints.
             //Once you have the control c, for time_step(=simulation::simulation_step) 
             //Create a plan with only that control
-            // temp_plan.clear();
-            // temp_plan.copy_onto_back(c,time_step);
+            //temp_plan.clear();
+            //temp_plan.copy_onto_back(c,time_step);
 
             //>>>>>>>>>>>>>>>>>>PROPAGATING PLANS TO FIND THE REACHED STATE
             //If you have a plan and want to apply the control sequence to a state, the propagate returns the trajectory this would generate
