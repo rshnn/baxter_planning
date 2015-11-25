@@ -116,9 +116,10 @@ namespace prx
 
         void potential_t::step()
         {
-            double  etta[7] = {1, 1, 1, 1, 1, 1, 1};
-            double  zeta[7] = {1, 1, 1, 1, 1, 1, 1};
-            double  roh_0 = 1.0;
+            double  etta[7]     = {1, 1, 1, 1, 1, 1, 1};
+            double  zeta[7]     = {1, 1, 1, 1, 1, 1, 1};
+            double  roh_0       = 1.0;
+            double  trans_d     = 1.0;
             char *links[7] = {"left_arm_mount","left_upper_shoulder", "left_lower_shoulder","left_upper_elbow","left_lower_elbow", "left_upper_forearm", "left_lower_forearm"}
 
             //>>>>>>>>>>>>>>>>>>CLOSEST POINTS BETWEEN TWO BODIES
@@ -186,7 +187,14 @@ namespace prx
             vector_t goal_distance = curr_point - goal_point;
                     std::cout << "Goal vector: " << goal_distance << std::endl;
                     std::cout << "Goal norm:   " << goal_distance.norm() << std::endl;
-            vector_t Force_attr = (goal_distance) * (-1)*(zeta[0]);
+
+
+            if(goal_distance.norm() <= trans_d){
+                vector_t Force_attr = (goal_distance) * (-1)*(zeta[0]);
+            }else{
+                vector_t Force_attr = (goal_distance / goal_distance.norm() ) * trans_d * zeta[0] * (-1);
+            }
+
 
     
             /* REPULSIVE FORCE */
