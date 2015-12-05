@@ -7,7 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   image_transport
   cv_bridge
-  sensor_msgs
+  tf
 )
 
 catkin_package(
