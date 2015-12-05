@@ -120,7 +120,7 @@ namespace prx
             double  zeta[7]     = {1, 1, 1, 1, 1, 1, 1};
             double  roh_0       = 1.0;
             double  trans_d     = 1.0;
-            char *links[7] = {"left_arm_mount","left_upper_shoulder", "left_lower_shoulder","left_upper_elbow","left_lower_elbow", "left_upper_forearm", "left_lower_forearm"};
+            //char *links[7] = {"left_arm_mount","left_upper_shoulder", "left_lower_shoulder","left_upper_elbow","left_lower_elbow", "left_upper_forearm", "left_lower_forearm"};
 
             //>>>>>>>>>>>>>>>>>>CLOSEST POINTS BETWEEN TWO BODIES
             //Call the collision checker with the two points and the valid names of the two bodies
