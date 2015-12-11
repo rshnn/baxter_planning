@@ -90,7 +90,7 @@ public:
     // The 3x3 rotation matrix and 3x1 translation vector.
     tf::Matrix3x3 homo_rotation = tf_transform_.getBasis();
     tf::Vector3 homo_translation = tf_transform_.getOrigin();
-    std::cout << tf_transform_.getOrigin().x() <<" "<< tf_transform_.getOrigin().y() << " "<< tf_transform_.getOrigin().z() << std::endl;
+    //std::cout << tf_transform_.getOrigin().x() <<" "<< tf_transform_.getOrigin().y() << " "<< tf_transform_.getOrigin().z() << std::endl;
 
 
 
@@ -129,12 +129,18 @@ public:
 
 	std::vector<tf::Vector3> global_coords;
 
+
+
+
+  double object_pose[8][7];
+
+
 	int i = 0;
 	for (uint16_t c: components) {
 		Mat masked = mask_by_component(component_output, COMPONENT_SEPARATION_CONST*c);
 		Moments m = moments(masked, true);
 
-		double min_comp_size = masked.cols*masked.rows/300;
+		double min_comp_size = masked.cols*masked.rows/400;
 		if (m.m00 < min_comp_size) {
 			continue;
 		}
@@ -183,7 +189,7 @@ public:
 		putText(orientation, text, Point(c_x, c_y-20), fontFace, fontScale,
 						Scalar::all(0), textThickness, 8);
 
-		tf::Vector3 cam_frame = pixel_to_image_plane_transform(c_x, c_y, primary_x, primary_y, fx, fy, z);
+		tf::Vector3 cam_frame = pixel_to_image_plane_transform(c_x, c_y, primary_x, primary_y, fx, fy, z-0.90);
 		tf::Vector3 global_frame = tf_transform_.invXform(cam_frame);
 		global_coords.push_back(global_frame);
 
@@ -197,6 +203,12 @@ public:
 		output_file << "axis of orientation: " << axis << std::endl;
 		output_file << "eccentricity: " << eccentricity << std::endl;
 		output_file << std::endl;
+
+    object_pose[i-1][0] = global_frame.getX();
+    object_pose[i-1][1] = global_frame.getY();
+    object_pose[i-1][2] = global_frame.getZ();
+
+
 	}
 
     cv::imshow("threshold_image", output);
@@ -212,19 +224,18 @@ public:
       Still playing around with this.  Check msg/Num.msg for the elements inside the Num message.  Currently adding dummy data into the msg.
     */
     string dummy_colors[] = {"red", "yellow", "blue", "red", "yellow", "blue", "red", "yellow"};
-    float dummy_SE3[7] = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
     image_listener::Num message;
 
     //Cant figure out why, but I cant pass the arrays declared above^ directly into the message.  probably some type casting needed or something.
     message.colors = {"red", "yellow", "blue", "red", "yellow", "blue", "red", "yellow"};
-    message.object1 = {0.95, 0.50, 0.87, 0, 0, 0, 1};
-    message.object2 = {0.90, 0.50, 0.87, 0, 0, 0, 1};
-    message.object3 = {0.85, 0.50, 0.87, 0, 0, 0, 1};
-    message.object4 = {0.80, 0.50, 0.87, 0, 0, 0, 1};
-    message.object5 = {0.75, 0.50, 0.87, 0, 0, 0, 1};
-    message.object6 = {0.70, 0.50, 0.87, 0, 0, 0, 1};
-    message.object7 = {0.65, 0.50, 0.87, 0, 0, 0, 1};
-    message.object8 = {0.60, 0.50, 0.87, .25, .25, .25, 0};
+    message.object1 = {object_pose[0][0], object_pose[0][1], object_pose[0][2], 0, 0, 0, 1};
+    message.object2 = {object_pose[1][0], object_pose[1][1], object_pose[1][2], 0, 0, 0, 1};
+    message.object3 = {object_pose[2][0], object_pose[2][1], object_pose[2][2], 0, 0, 0, 1};
+    message.object4 = {object_pose[3][0], object_pose[3][1], object_pose[3][2], 0, 0, 0, 1};
+    message.object5 = {object_pose[4][0], object_pose[4][1], object_pose[4][2], 0, 0, 0, 1};
+    message.object6 = {object_pose[5][0], object_pose[5][1], object_pose[5][2], 0, 0, 0, 1};
+    message.object7 = {object_pose[6][0], object_pose[6][1], object_pose[6][2], 0, 0, 0, 1};
+    message.object8 = {object_pose[7][0], object_pose[7][1], object_pose[7][2], 0, 0, 0, 1};
 
 
     object_publisher_.publish(message);
