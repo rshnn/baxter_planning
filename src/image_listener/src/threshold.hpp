@@ -28,7 +28,7 @@ double variance(std::vector<double> P);
 
 int automatic_threshold(Mat greyscale);
 
-Mat threshold_image(Mat greyscale, int width, int height);
+Mat threshold_image(Mat greyscale);
 
 
 // connectivity functions

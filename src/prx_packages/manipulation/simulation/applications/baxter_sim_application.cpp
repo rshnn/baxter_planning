@@ -70,6 +70,25 @@ namespace prx
             void baxter_sim_application_t::detected_objects_callback(const image_listener::Num& msg){
                 PRX_ERROR_S("Placing detected objects in simulation.");
 
+                // int blue[2];
+                // int yellow[2];
+                // int green[2];
+                // int red[2];
+                std::string blue = ("blue");
+                std::string yellow = ("yellow");
+                std::string green = ("green");
+                std::string red = ("red");
+
+                // int i = 0;
+                // for(i=0; i<=8; i++){
+                //     if(!red.compare(msg.colors[i])){
+                //         std::cout << "Found red" << std::endl;
+                //     }
+                // }
+
+
+
+
                 std::vector<movable_body_plant_t* > objects;
                 manipulation_simulator_t* manip_sim = dynamic_cast<manipulation_simulator_t* >(simulator);
                 
@@ -94,23 +113,33 @@ namespace prx
                 //     object_space->copy_from_point(object);
                 // }
 
+                
+
 
                 /* yellow */
                 OBJECT_INDEX = 0;
                 const space_t* object_space = objects[OBJECT_INDEX]->get_state_space();
                 util::space_point_t * object = object_space->alloc_point();
-                object->at(0) = 0.95;
-                object->at(1) = 0.60;
-                object->at(2) = 0.87;
+                object->at(0) = msg.object1[0];
+                object->at(1) = msg.object1[1];
+                object->at(2) = msg.object1[2];
+                object->at(3) = msg.object1[3];
+                object->at(4) = msg.object1[4];
+                object->at(5) = msg.object1[5];
+                object->at(6) = msg.object1[6];
                 object_space->copy_from_point(object);
 
                 /* red */
                 OBJECT_INDEX = 1;
                 object_space = objects[OBJECT_INDEX]->get_state_space();
                 object = object_space->alloc_point();
-                object->at(0) = 0.90;
-                object->at(1) = 0.60;
-                object->at(2) = 0.87;
+                object->at(0) = msg.object2[0];
+                object->at(1) = msg.object2[1];
+                object->at(2) = msg.object2[2];
+                object->at(3) = msg.object2[3];
+                object->at(4) = msg.object2[4];
+                object->at(5) = msg.object2[5];
+                object->at(6) = msg.object2[6];
                 object_space->copy_from_point(object);
             
 
@@ -118,18 +147,26 @@ namespace prx
                 OBJECT_INDEX = 2;
                 object_space = objects[OBJECT_INDEX]->get_state_space();
                 object = object_space->alloc_point();
-                object->at(0) = 0.85;
-                object->at(1) = 0.60;
-                object->at(2) = 0.87;
+                object->at(0) = msg.object3[0];
+                object->at(1) = msg.object3[1];
+                object->at(2) = msg.object3[2];
+                object->at(3) = msg.object3[3];
+                object->at(4) = msg.object3[4];
+                object->at(5) = msg.object3[5];
+                object->at(6) = msg.object3[6];                
                 object_space->copy_from_point(object);
 
                 /* green */
                 OBJECT_INDEX = 3;
                 object_space = objects[OBJECT_INDEX]->get_state_space();
                 object = object_space->alloc_point();
-                object->at(0) = 0.80;
-                object->at(1) = 0.60;
-                object->at(2) = 0.87;
+                object->at(0) = msg.object4[0];
+                object->at(1) = msg.object4[1];
+                object->at(2) = msg.object4[2];
+                object->at(3) = msg.object4[3];
+                object->at(4) = msg.object4[4];
+                object->at(5) = msg.object4[5];
+                object->at(6) = msg.object4[6];
                 object_space->copy_from_point(object);
 
 
@@ -137,9 +174,13 @@ namespace prx
                 OBJECT_INDEX  = 4;
                 object_space = objects[OBJECT_INDEX]->get_state_space();
                 object = object_space->alloc_point();
-                object->at(0) = 0.75;
-                object->at(1) = 0.60;
-                object->at(2) = 0.87;
+                object->at(0) = msg.object5[0];
+                object->at(1) = msg.object5[1];
+                object->at(2) = msg.object5[2];
+                object->at(3) = msg.object5[3];
+                object->at(4) = msg.object5[4];
+                object->at(5) = msg.object5[5];
+                object->at(6) = msg.object5[6];
                 object_space->copy_from_point(object);
                 
 
@@ -147,9 +188,13 @@ namespace prx
                 OBJECT_INDEX  = 5;
                 object_space = objects[OBJECT_INDEX]->get_state_space();
                 object = object_space->alloc_point();
-                object->at(0) = 0.70;
-                object->at(1) = 0.60;
-                object->at(2) = 0.87;
+                object->at(0) = msg.object6[0];
+                object->at(1) = msg.object6[1];
+                object->at(2) = msg.object6[2];
+                object->at(3) = msg.object6[3];
+                object->at(4) = msg.object6[4];
+                object->at(5) = msg.object6[5];
+                object->at(6) = msg.object6[6];
                 object_space->copy_from_point(object);
                 
 
@@ -157,9 +202,13 @@ namespace prx
                 OBJECT_INDEX  = 6;
                 object_space = objects[OBJECT_INDEX]->get_state_space();
                 object = object_space->alloc_point();
-                object->at(0) = 0.65;
-                object->at(1) = 0.60;
-                object->at(2) = 0.87;
+                object->at(0) = msg.object7[0];
+                object->at(1) = msg.object7[1];
+                object->at(2) = msg.object7[2];
+                object->at(3) = msg.object7[3];
+                object->at(4) = msg.object7[4];
+                object->at(5) = msg.object7[5];
+                object->at(6) = msg.object7[6];
                 object_space->copy_from_point(object);
                 
 
@@ -167,13 +216,15 @@ namespace prx
                 OBJECT_INDEX  = 7;
                 object_space = objects[OBJECT_INDEX]->get_state_space();
                 object = object_space->alloc_point();
-                object->at(0) = 0.60;
-                object->at(1) = 0.60;
-                object->at(2) = 0.87;
+                object->at(0) = msg.object8[0];
+                object->at(1) = msg.object8[1];
+                object->at(2) = msg.object8[2];
+                object->at(3) = msg.object8[3];
+                object->at(4) = msg.object8[4];
+                object->at(5) = msg.object8[5];
+                object->at(6) = msg.object8[6];
                 object_space->copy_from_point(object);
             
-
-
 
                 simulator_state = manip_sim->get_state_space()->alloc_point();
                 simulator->push_state(simulator_state);//By default the objects return to their original position

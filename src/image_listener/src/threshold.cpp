@@ -155,9 +155,12 @@ int automatic_threshold(Mat greyscale) {
 	return max_threshold;
 }
 
-Mat threshold_image(Mat greyscale, int width, int height) {
+Mat threshold_image(Mat greyscale) {
 	int threshold = automatic_threshold(greyscale);
 	//std::cout << "Threshold value from Otsu: " << threshold << std::endl;
+
+	int width = greyscale.cols;
+	int height = greyscale.rows;
 
 	// because reflections and lighting and stuff
 	int threshold_extra_constant = 10;

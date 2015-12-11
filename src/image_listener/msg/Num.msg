@@ -1,5 +1,5 @@
 string[8] colors
-float64[] object1
+float64[7] object1
 float64[7] object2
 float64[7] object3
 float64[7] object4

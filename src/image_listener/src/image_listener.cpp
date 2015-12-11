@@ -15,6 +15,8 @@
 #include "threshold.hpp"
 #include "pixel_coord_transform.hpp"
 
+using namespace cv;
+
 class ImageListener
 {
 private:
@@ -67,7 +69,6 @@ public:
     //p_0 = H^0_1 *p_1     Point in frame 0 is the multiplication of the homogen_matrix times the point in frame1
     try{
       tf_listener_.lookupTransform("/left_hand_camera", "/base", ros::Time(0), tf_transform_);
-      std::cout << "~~SUCCESS" << std::endl;
     }
       catch (tf::TransformException &ex) {
       ROS_ERROR("%s",ex.what());
@@ -89,7 +90,7 @@ public:
     // The 3x3 rotation matrix and 3x1 translation vector.
     tf::Matrix3x3 homo_rotation = tf_transform_.getBasis();
     tf::Vector3 homo_translation = tf_transform_.getOrigin();
-    //std::cout << tf_transform_.getOrigin().x() <<" "<< tf_transform_.getOrigin().y() << " "<< tf_transform_.getOrigin().z() << std::endl;
+    std::cout << tf_transform_.getOrigin().x() <<" "<< tf_transform_.getOrigin().y() << " "<< tf_transform_.getOrigin().z() << std::endl;
 
 
 
@@ -111,7 +112,7 @@ public:
 	GaussianBlur(_image, image, Size(3,3), 0, 0);
 	Mat greyscale = convert_to_greyscale(image);
 
-	Mat output = threshold_image(greyscale, width, height);
+	Mat output = threshold_image(greyscale);
 
 	std::vector<uint16_t> components;
 	Mat component_output = connected_components(output, components);
@@ -124,6 +125,8 @@ public:
 	std::ofstream output_file;
 	output_file.open("image_debug.txt");
 
+	output_file << "Image size: " << image.size() << std::endl;
+
 	std::vector<tf::Vector3> global_coords;
 
 	int i = 0;
@@ -131,7 +134,8 @@ public:
 		Mat masked = mask_by_component(component_output, COMPONENT_SEPARATION_CONST*c);
 		Moments m = moments(masked, true);
 
-		if (m.m00 < 4000) {
+		double min_comp_size = masked.cols*masked.rows/300;
+		if (m.m00 < min_comp_size) {
 			continue;
 		}
 		i++;
@@ -157,18 +161,18 @@ public:
 
 		circle( orientation,
 			Point(c_x, c_y),
-			10,
+			5,
 			Scalar(0, 0, 0),
 			thickness,
 			lineType );
 
-		int axisLength = m.m00/300;
+		int axisLength = m.m00/100;
 
 		line( orientation,
 			Point(c_x, c_y),
 			Point(c_x+axisLength*cos(axis), c_y+axisLength*sin(axis)),
 			Scalar(0, 0, 0),
-			10,
+			5,
 			lineType);
 
 		int fontFace = FONT_HERSHEY_SCRIPT_SIMPLEX;
@@ -179,13 +183,16 @@ public:
 		putText(orientation, text, Point(c_x, c_y-20), fontFace, fontScale,
 						Scalar::all(0), textThickness, 8);
 
-		tf::Vector3 cam = pixel_to_image_plane_transform(c_x, c_y, primary_x, primary_y, fx, fy, z);
-		global_coords.push_back(tf_transform_.invXform(cam));
+		tf::Vector3 cam_frame = pixel_to_image_plane_transform(c_x, c_y, primary_x, primary_y, fx, fy, z);
+		tf::Vector3 global_frame = tf_transform_.invXform(cam_frame);
+		global_coords.push_back(global_frame);
+
 		// I'm not sure if these calculations are correct
 		double l_1 = m.mu20 - m.mu02 + sqrt(4*SQ(m.mu11) + SQ(m.mu20 - m.mu02));
 		double l_2 = m.mu20 - m.mu02 - sqrt(4*SQ(m.mu11) + SQ(m.mu20 - m.mu02));
 		double eccentricity = sqrt(1- l_2/l_1);
 
+		output_file << "estimated coordinates: " << global_frame.getX() << " " << global_frame.getY() << " " << global_frame.getZ() << std::endl;
 		output_file << "centroid: " << c_x << ", " << c_y << std::endl;
 		output_file << "axis of orientation: " << axis << std::endl;
 		output_file << "eccentricity: " << eccentricity << std::endl;
@@ -200,9 +207,6 @@ public:
 
 
 
-
-
-
     /* PUBLISH INFO ON OBJECT LOCATION AND COLOR TO ROSTOPIC /DETECTED_OBJECTS */
     /*
       Still playing around with this.  Check msg/Num.msg for the elements inside the Num message.  Currently adding dummy data into the msg.
@@ -213,7 +217,16 @@ public:
 
     //Cant figure out why, but I cant pass the arrays declared above^ directly into the message.  probably some type casting needed or something.
     message.colors = {"red", "yellow", "blue", "red", "yellow", "blue", "red", "yellow"};
-    message.object1 = {1.0, -3.14, 42.0};
+    message.object1 = {0.95, 0.50, 0.87, 0, 0, 0, 1};
+    message.object2 = {0.90, 0.50, 0.87, 0, 0, 0, 1};
+    message.object3 = {0.85, 0.50, 0.87, 0, 0, 0, 1};
+    message.object4 = {0.80, 0.50, 0.87, 0, 0, 0, 1};
+    message.object5 = {0.75, 0.50, 0.87, 0, 0, 0, 1};
+    message.object6 = {0.70, 0.50, 0.87, 0, 0, 0, 1};
+    message.object7 = {0.65, 0.50, 0.87, 0, 0, 0, 1};
+    message.object8 = {0.60, 0.50, 0.87, .25, .25, .25, 0};
+
+
     object_publisher_.publish(message);
 
 
