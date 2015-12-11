@@ -202,6 +202,7 @@ public:
 		output_file << "centroid: " << c_x << ", " << c_y << std::endl;
 		output_file << "axis of orientation: " << axis << std::endl;
 		output_file << "eccentricity: " << eccentricity << std::endl;
+    output_file << "size: " << m.m00 << std::endl; 
 		output_file << std::endl;
 
     object_pose[i-1][0] = global_frame.getX();
@@ -209,31 +210,36 @@ public:
     object_pose[i-1][2] = global_frame.getZ()+0.07;
 
 
-    std::cout << i << " " << m.m00 << std::endl;
+    // std::cout << i << " " << m.m00 << std::endl;
 
-    /* Standing upright */
-    if(m.m00 <= 1600 ){
-      std::cout << i << " Upright" << std::endl;
-      object_pose[i-1][3] = 0;
-      object_pose[i-1][4] = 0;
-      object_pose[i-1][5] = 0;
-      object_pose[i-1][6] = 1;
-    }else{
+    // /* Standing upright */
+    // if(m.m00 <= 1600 ){
+    //  // std::cout << i << " Upright" << std::endl;
+    //   object_pose[i-1][3] = 0;
+    //   object_pose[i-1][4] = 0;
+    //   object_pose[i-1][5] = 0;
+    //   object_pose[i-1][6] = 1;
+    // }else{
     /* Lying on side */
-      std::cout << i << " On side" << std::endl;
-
-
+      //  std::cout << i << " On side" << std::endl;
       tf::Vector3 vert_vect = tf::Vector3(0, 0, 1);
-      tf::Quaternion quat = tf::Quaternion(vert_vect, axis);
+      tf::Vector3 vert_hoiz = tf::Vector3(0, 1, 0);
+
+      tf::Quaternion quat = tf::Quaternion(vert_vect, -axis);
+
+
+      tf::Quaternion quat2 = tf::Quaternion(vert_hoiz, M_PI/2.0);
+
+      tf::Quaternion pose =  quat*quat2;
 
       //std::cout << quat.getX() << std::endl;
 
-      object_pose[i-1][3] = quat.getX();
-      object_pose[i-1][4] = quat.getY();
-      object_pose[i-1][5] = quat.getZ();
-      object_pose[i-1][6] = quat.getW();
+      object_pose[i-1][3] = pose.getX();
+      object_pose[i-1][4] = pose.getY();
+      object_pose[i-1][5] = pose.getZ();
+      object_pose[i-1][6] = pose.getW();
 
-    }
+   }
 
 
 	}
@@ -250,7 +256,7 @@ public:
     /*
       Still playing around with this.  Check msg/Num.msg for the elements inside the Num message.  Currently adding dummy data into the msg.
     */
-    string dummy_colors[] = {"red", "yellow", "blue", "red", "yellow", "blue", "red", "yellow"};
+    // string dummy_colors[] = {"red", "yellow", "blue", "red", "yellow", "blue", "red", "yellow"};
     image_listener::Num message;
 
     //Cant figure out why, but I cant pass the arrays declared above^ directly into the message.  probably some type casting needed or something.
