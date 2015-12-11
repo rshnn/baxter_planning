@@ -27,6 +27,8 @@
 #include "simulation/simulators/manipulation_simulator.hpp"
 #include "simulation/systems/plants/movable_body_plant.hpp"
 
+#include "image_listener/Num.h"
+
 #include "prx/utilities/math/configurations/config.hpp"
 
 
@@ -53,6 +55,9 @@ namespace prx
                 PRX_DEBUG_COLOR("Initialized", PRX_TEXT_RED);
                 received_plan_sub = node.subscribe("/ready_to_plan", 1, &baxter_sim_application_t::planning_ready_callback, this);
                 planning_ready_sub = node.subscribe("/planning/plans", 1, &baxter_sim_application_t::received_plan_callback, this);
+               
+                detected_objects_sub = node.subscribe("/detected_objects", 1, &baxter_sim_application_t::detected_objects_callback, this);
+
                 manipulation_request_pub = node.advertise<std_msgs::String> ("/manipulation_request", 1);
                 simulator_state = simulator->get_state_space()->alloc_point();
                 PRX_ERROR_S("\n\n\n SIMULATOR AT START::: "<<simulator->get_state_space()->print_point(simulator_state,4)<<"\n\n\n");
@@ -60,6 +65,125 @@ namespace prx
                 counter = 0;
 
             }
+
+
+            void baxter_sim_application_t::detected_objects_callback(const image_listener::Num& msg){
+                PRX_ERROR_S("Placing detected objects in simulation.");
+
+                std::vector<movable_body_plant_t* > objects;
+                manipulation_simulator_t* manip_sim = dynamic_cast<manipulation_simulator_t* >(simulator);
+                
+                manip_sim->get_movable_objects(objects);
+
+               int OBJECT_INDEX;
+
+               /* RANDOMIZE OBJECT POSITIONS */
+                // for(OBJECT_INDEX = 0; OBJECT_INDEX < objects.size(); OBJECT_INDEX++){
+
+                //     const space_t* object_space = objects[OBJECT_INDEX]->get_state_space();
+                //     util::space_point_t * object = object_space->alloc_point();
+
+                //     // Update the state space of each with a point/vector that you change randomly within range 
+                //     double x = uniform_random(0.75, 0.95);
+                //     double y = uniform_random(0.40, 0.60);
+                //     double z = 0.87;
+
+                //     object->at(0) = x;
+                //     object->at(1) = y;
+                //     object->at(2) = z;
+                //     object_space->copy_from_point(object);
+                // }
+
+
+                /* yellow */
+                OBJECT_INDEX = 0;
+                const space_t* object_space = objects[OBJECT_INDEX]->get_state_space();
+                util::space_point_t * object = object_space->alloc_point();
+                object->at(0) = 0.95;
+                object->at(1) = 0.60;
+                object->at(2) = 0.87;
+                object_space->copy_from_point(object);
+
+                /* red */
+                OBJECT_INDEX = 1;
+                object_space = objects[OBJECT_INDEX]->get_state_space();
+                object = object_space->alloc_point();
+                object->at(0) = 0.90;
+                object->at(1) = 0.60;
+                object->at(2) = 0.87;
+                object_space->copy_from_point(object);
+            
+
+                /* red */
+                OBJECT_INDEX = 2;
+                object_space = objects[OBJECT_INDEX]->get_state_space();
+                object = object_space->alloc_point();
+                object->at(0) = 0.85;
+                object->at(1) = 0.60;
+                object->at(2) = 0.87;
+                object_space->copy_from_point(object);
+
+                /* green */
+                OBJECT_INDEX = 3;
+                object_space = objects[OBJECT_INDEX]->get_state_space();
+                object = object_space->alloc_point();
+                object->at(0) = 0.80;
+                object->at(1) = 0.60;
+                object->at(2) = 0.87;
+                object_space->copy_from_point(object);
+
+
+                /* yellow */
+                OBJECT_INDEX  = 4;
+                object_space = objects[OBJECT_INDEX]->get_state_space();
+                object = object_space->alloc_point();
+                object->at(0) = 0.75;
+                object->at(1) = 0.60;
+                object->at(2) = 0.87;
+                object_space->copy_from_point(object);
+                
+
+                /* green */
+                OBJECT_INDEX  = 5;
+                object_space = objects[OBJECT_INDEX]->get_state_space();
+                object = object_space->alloc_point();
+                object->at(0) = 0.70;
+                object->at(1) = 0.60;
+                object->at(2) = 0.87;
+                object_space->copy_from_point(object);
+                
+
+                /* blue */
+                OBJECT_INDEX  = 6;
+                object_space = objects[OBJECT_INDEX]->get_state_space();
+                object = object_space->alloc_point();
+                object->at(0) = 0.65;
+                object->at(1) = 0.60;
+                object->at(2) = 0.87;
+                object_space->copy_from_point(object);
+                
+
+                /* blue */
+                OBJECT_INDEX  = 7;
+                object_space = objects[OBJECT_INDEX]->get_state_space();
+                object = object_space->alloc_point();
+                object->at(0) = 0.60;
+                object->at(1) = 0.60;
+                object->at(2) = 0.87;
+                object_space->copy_from_point(object);
+            
+
+
+
+                simulator_state = manip_sim->get_state_space()->alloc_point();
+                simulator->push_state(simulator_state);//By default the objects return to their original position
+                PRX_ERROR_S("SIMULATOR STATE SPACE CHANGED TO::: "<<simulator->get_state_space()->print_memory(4));
+
+
+
+            };
+
+
 
             void baxter_sim_application_t::planning_ready_callback(const std_msgs::String& msg)
             {

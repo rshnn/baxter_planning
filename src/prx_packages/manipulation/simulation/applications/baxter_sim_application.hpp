@@ -19,6 +19,7 @@
 #include "prx/simulation/applications/empty_application.hpp"
 #include "std_msgs/String.h"
 #include "ros/ros.h"
+#include "image_listener/Num.h"
 
 namespace prx
 {
@@ -35,6 +36,9 @@ namespace prx
                 virtual void init(const util::parameter_reader_t * const reader);
                 virtual void received_plan_callback(const prx_simulation::plan_msg& msg);
                 virtual void planning_ready_callback(const std_msgs::String& msg);
+
+                virtual void detected_objects_callback(const image_listener::Num& msg);
+
                 virtual void randomize_positions();
                 virtual void frame(const ros::TimerEvent& event);
               private:
@@ -42,6 +46,7 @@ namespace prx
                 ros::Publisher manipulation_request_pub;      
                 ros::Subscriber received_plan_sub;      
                 ros::Subscriber planning_ready_sub;
+                ros::Subscriber detected_objects_sub;
                 int counter;
                 sim::state_t* simulator_state;
 

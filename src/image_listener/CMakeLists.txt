@@ -8,20 +8,39 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
   cv_bridge
   tf
+  message_generation
+)
+
+#rosbuild_genmsg()
+
+
+add_message_files(
+  FILES
+  Num.msg
+)
+
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
 )
 
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES image_listener
-#  CATKIN_DEPENDS roscpp rospy std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS src
+  LIBRARIES image_listener_lib
+  CATKIN_DEPENDS roscpp rospy std_msgs image_transport cv_bridge tf message_generation
+  DEPENDS system_lib
 )
+
+
+add_definitions(-std=c++11)
+
 
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(image_listener_node src/image_listener.cpp)
+add_executable(image_listener_node src/image_listener.cpp src/threshold.cpp src/pixel_coord_transform.cpp)
 
 add_dependencies(image_listener_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
