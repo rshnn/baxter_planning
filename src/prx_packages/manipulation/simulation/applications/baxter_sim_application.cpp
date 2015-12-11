@@ -228,7 +228,7 @@ namespace prx
 
                 simulator_state = manip_sim->get_state_space()->alloc_point();
                 simulator->push_state(simulator_state);//By default the objects return to their original position
-                PRX_ERROR_S("SIMULATOR STATE SPACE CHANGED TO::: "<<simulator->get_state_space()->print_memory(4));
+                //PRX_ERROR_S("SIMULATOR STATE SPACE CHANGED TO::: "<<simulator->get_state_space()->print_memory(4));
 
 
 
