@@ -221,10 +221,17 @@ public:
     }else{
     /* Lying on side */
       std::cout << i << " On side" << std::endl;
-      object_pose[i-1][3] = 0.25;
-      object_pose[i-1][4] = 0;
-      object_pose[i-1][5] = 0.25;
-      object_pose[i-1][6] = 0;
+
+
+      tf::Vector3 vert_vect = tf::Vector3(0, 0, 1);
+      tf::Quaternion quat = tf::Quaternion(vert_vect, axis);
+
+      //std::cout << quat.getX() << std::endl;
+
+      object_pose[i-1][3] = quat.getX();
+      object_pose[i-1][4] = quat.getY();
+      object_pose[i-1][5] = quat.getZ();
+      object_pose[i-1][6] = quat.getW();
 
     }
 
