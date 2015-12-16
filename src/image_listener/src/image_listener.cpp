@@ -189,8 +189,7 @@ public:
 		putText(orientation, text, Point(c_x, c_y-20), fontFace, fontScale,
 						Scalar::all(0), textThickness, 8);
 
-		tf::Vector3 cam_frame = pixel_to_image_plane_transform(c_x, c_y, primary_x, primary_y, fx, fy, z-0.90);
-		tf::Vector3 global_frame = tf_transform_.invXform(cam_frame);
+		tf::Vector3 global_frame = pixel_to_image_plane_transform(c_x, height-c_y, primary_x, primary_y, fx, fy, z);
 		global_coords.push_back(global_frame);
 
 		// I'm not sure if these calculations are correct
@@ -207,7 +206,7 @@ public:
 
     object_pose[i-1][0] = global_frame.getX();
     object_pose[i-1][1] = global_frame.getY();
-    object_pose[i-1][2] = global_frame.getZ()+0.07;
+    object_pose[i-1][2] = global_frame.getZ();
 
 
     // std::cout << i << " " << m.m00 << std::endl;
@@ -223,12 +222,12 @@ public:
     /* Lying on side */
       //  std::cout << i << " On side" << std::endl;
       tf::Vector3 vert_vect = tf::Vector3(0, 0, 1);
-      tf::Vector3 vert_hoiz = tf::Vector3(0, 1, 0);
+      tf::Vector3 vert_horiz = tf::Vector3(0, 1, 0);
 
       tf::Quaternion quat = tf::Quaternion(vert_vect, -axis);
 
 
-      tf::Quaternion quat2 = tf::Quaternion(vert_hoiz, M_PI/2.0);
+      tf::Quaternion quat2 = tf::Quaternion(vert_horiz, M_PI/2.0);
 
       tf::Quaternion pose =  quat*quat2;
 
@@ -239,7 +238,7 @@ public:
       object_pose[i-1][5] = pose.getZ();
       object_pose[i-1][6] = pose.getW();
 
-   }
+   //}
 
 
 	}
