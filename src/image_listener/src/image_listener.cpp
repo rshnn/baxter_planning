@@ -199,7 +199,7 @@ public:
 		putText(orientation, text, Point(c_x, c_y-20), fontFace, fontScale,
 						Scalar::all(0), textThickness, 8);
 
-		tf::Vector3 global_frame = pixel_to_image_plane_transform(c_x, height-c_y, primary_x, primary_y, fx, fy, z);
+		tf::Vector3 global_frame = pixel_to_image_plane_transform(c_x, height-c_y, primary_x, primary_y, fx, fy, z+0.1);
 
 		global_frame.setZ(0.9);
 		if (c.upright) {

@@ -1,27 +1,87 @@
-<launch>  
+<launch>
   <rosparam command="load" file="$(find prx_input)/templates/spaces/space_types.yaml"/>
 
   <rosparam command="load" ns="simulation">
     application:
       type: baxter_sim_application        
   </rosparam>
-  <rosparam ns="simulation" command="load" file="$(find manipulation)/input/manipulation_simulator.yaml"/>  
+  <rosparam ns="simulation" command="load" file="$(find manipulation)/input/manipulation_simulator.yaml"/>
   <rosparam command="load" ns="simulation/simulator/subsystems/consumer" file="$(find prx_input)/templates/controllers/consumer.yaml"/>
-  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/manipulator" file="$(find manipulation)/input/baxter/baxter.yaml"/>
-  <rosparam command="load" ns="simulation/cup_object" file="$(find manipulation)/input/objects/cup.yaml"/>
+  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/manipulator" file="$(find manipulation)/input/baxter/baxter.yaml"/>
 
+  <rosparam ns="simulation/simulator/subsystems/consumer/subsystems/router" file="$(find prx_input)/templates/controllers/router.yaml" />
 
   <!--   The start state in simulation and planning, and target SE3 configuration of the cylinder object -->
-  <rosparam command="load" ns="simulation/simulator/subsystems/obj">
-    initial_state: [0.95, 0.4, 0.87, 0, 0, 0, 1]
-  </rosparam>
-  <rosparam command="load" ns="planning/world_model/simulator/subsystems/obj">
-    initial_state: [0.95, 0.4, 0.87, 0, 0, 0, 1]
+  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/manipulator" >
+    initial_state: [ -0.10737865502929689,  -1.3069516297851564,  0.12808739564208985,  1.4710875739013674,  -0.10200972227783203,  1.5408836996704103,  2.340854679638672, 0, 0, 0, 0, 0, 0, 0, 1, 1]
   </rosparam>
 
+
   <rosparam ns="planning/task_planner/">
-    object_target: [0.95, 0.6, 0.87, 0, 0, 0, 1]
+    object_target: [0, 0.9, 1, 0, 0.7071, 0, 0.7071]
   </rosparam>
+
+
+
+  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/red1">
+    initial_state: [0.45, 0.4, 0.90, 0, 0, 0, 1]
+  </rosparam>
+  <rosparam command="load" ns="planning/world_model/simulator/subsystems/red1">
+    initial_state: [0.45, 0.4, 0.90, 0, 0, 0, 1]
+  </rosparam>
+  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/red2">
+    initial_state: [0.45, 0.6, 0.90, 0, 0, 0, 1]
+  </rosparam>
+  <rosparam command="load" ns="planning/world_model/simulator/subsystems/red2">
+    initial_state: [0.45, 0.6, 0.90, 0, 0, 0, 1]
+  </rosparam>
+
+
+  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/green1">
+    initial_state: [0.65, 0.4, 0.90, 0, 0, 0, 1]
+  </rosparam>
+  <rosparam command="load" ns="planning/world_model/simulator/subsystems/green1">
+    initial_state: [0.65, 0.4, 0.90, 0, 0, 0, 1]
+  </rosparam>
+
+  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/green2">
+    initial_state: [0.65, 0.6, 0.90, 0, 0, 0, 1]
+  </rosparam>
+  <rosparam command="load" ns="planning/world_model/simulator/subsystems/green2">
+    initial_state: [0.65, 0.6, 0.90, 0, 0, 0, 1]
+  </rosparam>
+
+
+  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/blue1">
+    initial_state: [0.45, 0.5, 0.90, 0, 0, 0, 1]
+  </rosparam>
+  <rosparam command="load" ns="planning/world_model/simulator/subsystems/blue1">
+    initial_state: [0.45, 0.5, 0.90, 0, 0, 0, 1]
+  </rosparam>
+
+  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/blue2">
+    initial_state: [0.45, 0.7, 0.90, 0, 0, 0, 1]
+  </rosparam>
+  <rosparam command="load" ns="planning/world_model/simulator/subsystems/blue2">
+    initial_state: [0.45, 0.7, 0.90, 0, 0, 0, 1]
+  </rosparam>
+
+
+  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/yellow1">
+    initial_state: [0.65, 0.5, 0.90, 0, 0, 0, 1]
+  </rosparam>
+  <rosparam command="load" ns="planning/world_model/simulator/subsystems/yellow1">
+    initial_state: [0.65, 0.5, 0.90, 0, 0, 0, 1]
+  </rosparam>
+
+  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/yellow2">
+    initial_state: [0.65, 0.7, 0.90, 0, 0, 0, 1]
+  </rosparam>
+  <rosparam command="load" ns="planning/world_model/simulator/subsystems/yellow2">
+    initial_state: [0.65, 0.7, 0.90, 0, 0, 0, 1]
+  </rosparam>
+
+
 
 
 
@@ -42,7 +102,7 @@
         serialize_flag: true
         planners:
           left_arm_motion_planner:
-            serialize_file: "left_arm_graph_1000_testing.roadmap"
+            serialize_file: "what_is_happening.roadmap"
   </rosparam>
 
 
@@ -56,40 +116,10 @@
           name: foundation
           collision_geometry:
             type: box
-            dims: [0.5, 1.11, 1.4]
+            dims: [0.8, 0.8, 0.2]
             material: shelf_grey
           config:
-            position: [0.9, 0.3, 0]
-            orientation: [0, 0, 0, 1]
-        -
-          name: first
-          collision_geometry:
-            type: cylinder
-            radius: 0.02
-            height: 0.1
-            material: red
-          config:
-            position: [0.95, 0.4, 0.655]
-            orientation: [0, 0, 0, 1]
-        -
-          name: second
-          collision_geometry:
-            type: cylinder
-            radius: 0.02
-            height: 0.1
-            material: blue
-          config:
-            position: [0.95, 0.6, 0.655]
-            orientation: [0, 0, 0, 1]
-        -
-          name: third
-          collision_geometry:
-            type: cylinder
-            radius: 0.02
-            height: 0.1
-            material: green
-          config:
-            position: [0.75, 0.6, 0.655]
+            position: [0.7, 0.43, 0.73]
             orientation: [0, 0, 0, 1]
   </rosparam>
 
@@ -101,19 +131,51 @@
           name: foundation
           collision_geometry:
             type: box
-            dims: [0.5, 1.11, 1.4]
+            dims: [0.8, 0.8, 0.2]
             material: shelf_grey
           config:
-            position: [0.9, 0.3, 0]
+            position: [0.7, 0.43, 0.73]
             orientation: [0, 0, 0, 1]
   </rosparam>
 
 
-  
 
-  <rosparam command="load" ns="simulation/simulator/subsystems/obj">
-    template: "cup_object"
+
+  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/red1">
+    template: "red_object"
   </rosparam>
+  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/red2">
+    template: "red_object"
+  </rosparam>
+
+
+  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/green1">
+    template: "green_object"
+  </rosparam>
+
+  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/green2">
+    template: "green_object"
+  </rosparam>
+
+
+  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/blue1">
+    template: "blue_object"
+  </rosparam>
+
+  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/blue2">
+    template: "blue_object"
+  </rosparam>
+
+
+  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/yellow1">
+    template: "yellow_object"
+  </rosparam>
+
+  <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/yellow2">
+    template: "yellow_object"
+  </rosparam>
+
+
 
   <rosparam ns="simulation/simulator/subsystems/consumer">
     keep_last_control: false
@@ -135,9 +197,23 @@
   <rosparam command="load" ns="planning">
     system_mapping:
       -
-        pair: [simulator/consumer/manipulator, world_model/simulator/manipulator]
+        pair: [simulator/consumer/router/manipulator, world_model/simulator/manipulator]
       -
-        pair: [simulator/obj, world_model/simulator/obj]
+        pair: [simulator/consumer/router/red1, world_model/simulator/red1]
+      -
+        pair: [simulator/consumer/router/red2, world_model/simulator/red2]
+      -
+        pair: [simulator/consumer/router/green1, world_model/simulator/green1]
+      -
+        pair: [simulator/consumer/router/green2, world_model/simulator/green2]
+      -
+        pair: [simulator/consumer/router/blue1, world_model/simulator/blue1]
+      -
+        pair: [simulator/consumer/router/blue2, world_model/simulator/blue2]
+      -
+        pair: [simulator/consumer/router/yellow1, world_model/simulator/yellow1]
+      -
+        pair: [simulator/consumer/router/yellow2, world_model/simulator/yellow2]
     consumer: simulator/consumer
     # random_seed: 14391835
     simulate: true
@@ -145,14 +221,14 @@
     persistent: false
     consumer_mapping:
       - 
-        pair: [simulator/consumer, manipulator_pc]
+        pair: [simulator/consumer, full_space]
     world_model:
       type: manipulation_world_model
       num_ik_seeds: 50
       IK_databases:
         baxter_database:
           distance_metric:
-            type: graph_distance_metric
+            type: linear_distance_metric
           manipulator: manipulator
           samples: 10000
           deserialize_file: baxter[10000].database
@@ -165,10 +241,183 @@
     visualize: true
     simulate: true
   </rosparam>
-  <rosparam command="load" ns="planning/world_model" file="$(find manipulation)/input/manipulation_simulator.yaml"/>  
+  <rosparam command="load" ns="planning/world_model" file="$(find manipulation)/input/manipulation_simulator.yaml"/>
   <rosparam command="load" ns="planning/world_model/simulator/subsystems/manipulator" file="$(find manipulation)/input/baxter/baxter.yaml"/>
-  <rosparam command="load" ns="planning/cup_object" file="$(find manipulation)/input/objects/cup.yaml"/>
-  
+
+  <rosparam command="load" ns="planning/world_model/simulator/subsystems/manipulator" >
+    initial_state: [ -0.10737865502929689,  -1.3069516297851564,  0.12808739564208985,  1.4710875739013674,  -0.10200972227783203,  1.5408836996704103,  2.340854679638672, 0, 0, 0, 0, 0, 0, 0, 1, 1]
+  </rosparam>
+
+
+<rosparam command="load" ns="simulation/red_object" >
+    type: movable_body
+    object_type: cup
+    max_step: 0.01
+    state_space: 
+      min: [-5.5, -5.5, -100, -1, -1, -1, -1]
+      max: [5.5, 5.5, 100, 1, 1, 1, 1]
+      scale: [0.025, 0.025, 0.05, 0.5, 0.5, 0.5, 0.5]
+    input_control_space: 
+      none: 4
+    root_geom: body
+    geometries:
+      -
+        name: body
+        collision_geometry:
+          type: cylinder
+          radius: 0.02
+          height: 0.14
+          material: red
+  </rosparam>
+  <rosparam command="load" ns="simulation/blue_object" >
+    type: movable_body
+    object_type: cup
+    max_step: 0.01
+    state_space: 
+      min: [-5.5, -5.5, -100, -1, -1, -1, -1]
+      max: [5.5, 5.5, 100, 1, 1, 1, 1]
+      scale: [0.025, 0.025, 0.05, 0.5, 0.5, 0.5, 0.5]
+    input_control_space: 
+      none: 4
+    root_geom: body
+    geometries:
+      -
+        name: body
+        collision_geometry:
+          type: cylinder
+          radius: 0.02
+          height: 0.14
+          material: blue
+  </rosparam>
+
+  <rosparam command="load" ns="simulation/green_object" >
+    type: movable_body
+    object_type: cup
+    max_step: 0.01
+    state_space: 
+      min: [-5.5, -5.5, -100, -1, -1, -1, -1]
+      max: [5.5, 5.5, 100, 1, 1, 1, 1]
+      scale: [0.025, 0.025, 0.05, 0.5, 0.5, 0.5, 0.5]
+    input_control_space: 
+      none: 4
+    root_geom: body
+    geometries:
+      -
+        name: body
+        collision_geometry:
+          type: cylinder
+          radius: 0.02
+          height: 0.14
+          material: green
+  </rosparam>
+
+  <rosparam command="load" ns="simulation/yellow_object" >
+    type: movable_body
+    object_type: cup
+    max_step: 0.01
+    state_space: 
+      min: [-5.5, -5.5, -100, -1, -1, -1, -1]
+      max: [5.5, 5.5, 100, 1, 1, 1, 1]
+      scale: [0.025, 0.025, 0.05, 0.5, 0.5, 0.5, 0.5]
+    input_control_space: 
+      none: 4
+    root_geom: body
+    geometries:
+      -
+        name: body
+        collision_geometry:
+          type: cylinder
+          radius: 0.02
+          height: 0.14
+          material: yellow
+  </rosparam>
+
+
+
+
+  <rosparam command="load" ns="planning/red_object" >
+    type: movable_body
+    object_type: cup
+    max_step: 0.01
+    state_space: 
+      min: [-5.5, -5.5, -100, -1, -1, -1, -1]
+      max: [5.5, 5.5, 100, 1, 1, 1, 1]
+      scale: [0.025, 0.025, 0.05, 0.5, 0.5, 0.5, 0.5]
+    input_control_space: 
+      none: 4
+    root_geom: body
+    geometries:
+      -
+        name: body
+        collision_geometry:
+          type: cylinder
+          radius: 0.02
+          height: 0.14
+          material: red
+  </rosparam>
+  <rosparam command="load" ns="planning/blue_object" >
+    type: movable_body
+    object_type: cup
+    max_step: 0.01
+    state_space: 
+      min: [-5.5, -5.5, -100, -1, -1, -1, -1]
+      max: [5.5, 5.5, 100, 1, 1, 1, 1]
+      scale: [0.025, 0.025, 0.05, 0.5, 0.5, 0.5, 0.5]
+    input_control_space: 
+      none: 4
+    root_geom: body
+    geometries:
+      -
+        name: body
+        collision_geometry:
+          type: cylinder
+          radius: 0.02
+          height: 0.14
+          material: blue
+  </rosparam>
+
+  <rosparam command="load" ns="planning/green_object" >
+    type: movable_body
+    object_type: cup
+    max_step: 0.01
+    state_space: 
+      min: [-5.5, -5.5, -100, -1, -1, -1, -1]
+      max: [5.5, 5.5, 100, 1, 1, 1, 1]
+      scale: [0.025, 0.025, 0.05, 0.5, 0.5, 0.5, 0.5]
+    input_control_space: 
+      none: 4
+    root_geom: body
+    geometries:
+      -
+        name: body
+        collision_geometry:
+          type: cylinder
+          radius: 0.02
+          height: 0.14
+          material: green
+  </rosparam>
+
+  <rosparam command="load" ns="planning/yellow_object" >
+    type: movable_body
+    object_type: cup
+    max_step: 0.01
+    state_space: 
+      min: [-5.5, -5.5, -100, -1, -1, -1, -1]
+      max: [5.5, 5.5, 100, 1, 1, 1, 1]
+      scale: [0.025, 0.025, 0.05, 0.5, 0.5, 0.5, 0.5]
+    input_control_space: 
+      none: 4
+    root_geom: body
+    geometries:
+      -
+        name: body
+        collision_geometry:
+          type: cylinder
+          radius: 0.02
+          height: 0.14
+          material: yellow
+  </rosparam>
+
 
 
   <rosparam ns="planning/world_model/planning_contexts">
@@ -211,9 +460,45 @@
         type: "baxter_left_arm_state_mapping"
   </rosparam>
 
-  <rosparam command="load" ns="planning/world_model/simulator/subsystems/obj">
-    template: "cup_object"
+  <rosparam command="load" ns="planning/world_model/simulator/subsystems/red1">
+    template: "red_object"
   </rosparam>
+  <rosparam command="load" ns="planning/world_model/simulator/subsystems/red2">
+    template: "red_object"
+  </rosparam>
+
+
+
+  <rosparam command="load" ns="planning/world_model/simulator/subsystems/blue1">
+    template: "blue_object"
+  </rosparam>
+
+  <rosparam command="load" ns="planning/world_model/simulator/subsystems/blue2">
+    template: "blue_object"
+  </rosparam>
+
+
+
+  <rosparam command="load" ns="planning/world_model/simulator/subsystems/green1">
+    template: "green_object"
+  </rosparam>
+
+  <rosparam command="load" ns="planning/world_model/simulator/subsystems/green2">
+    template: "green_object"
+  </rosparam>
+
+
+
+  <rosparam command="load" ns="planning/world_model/simulator/subsystems/yellow1">
+    template: "yellow_object"
+  </rosparam>
+
+  <rosparam command="load" ns="planning/world_model/simulator/subsystems/yellow2">
+    template: "yellow_object"
+  </rosparam>
+
+
+
 
   <rosparam ns="planning/graph_query_template">
     type: manipulation_query
@@ -279,7 +564,7 @@
   </rosparam>
 
 
-  #<node name="planning" pkg="prx_planning" type="prx_planning" required="false" launch-prefix="" output="screen" args="planning"/>
+  <node name="planning" pkg="prx_planning" type="prx_planning" required="false" launch-prefix="" output="screen" args="planning"/>
 
 
 

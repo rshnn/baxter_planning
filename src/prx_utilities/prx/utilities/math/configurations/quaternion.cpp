@@ -579,12 +579,12 @@ namespace prx
 
         double quaternion_t::distance( const quaternion_t& other ) const
         {
-            PRX_ASSERT_MSG(is_valid(),
+            /*PRX_ASSERT_MSG(is_valid(),
                            "Invalid quaternion: %f %f %f %f", q[0], q[1], q[2], q[3]);
             PRX_ASSERT_MSG(other.is_valid(),
                            "Invalid quaternion: %f %f %f %f",
                            other.q[0], other.q[1], other.q[2], other.q[3]);
-
+            */
             const vector_t v1(q[0],q[1],q[2],q[3]);
             const vector_t v2(other.q[0], other.q[1], other.q[2], other.q[3]);
             const double lambda = v1.dot_product(v2);

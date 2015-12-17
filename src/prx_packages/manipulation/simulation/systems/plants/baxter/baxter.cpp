@@ -35,6 +35,7 @@
 #include <kdl/chainfksolverpos_recursive.hpp>
 #include <kdl/chainidsolver_recursive_newton_euler.hpp>
 #include <baxter_core_msgs/JointCommand.h>
+#include <baxter_core_msgs/EndEffectorCommand.h>
 
 PLUGINLIB_EXPORT_CLASS(prx::packages::manipulation::baxter_t, prx::sim::system_t)
 
@@ -67,7 +68,7 @@ namespace prx
                 //The publisher can publish a joint command to the topic being listened to by the Baxter. 
                 //If this code is run on the same ROS Master as the Baxter, the Baxter will respond to commands being published on this topic.
                 pub_left = nh.advertise< baxter_core_msgs::JointCommand >("/robot/limb/left/joint_command",1);
-                //pub_ee = nh.advertise< baxter_core_msgs::JointCommand> ("/robot/end_effector/left_gripper/state",1);
+                pub_ee = nh.advertise< baxter_core_msgs::JointCommand> ("/robot/end_effector/left_gripper/command",1);
             }
 
             void baxter_t::create_spaces()
@@ -84,7 +85,7 @@ namespace prx
                     baxter_core_msgs::JointCommand com_msg;
                     com_msg.mode = baxter_core_msgs::JointCommand::POSITION_MODE;
 
-                   // baxter_core_msgs::EndEffectorState ee_msg;
+                   baxter_core_msgs::EndEffectorCommand ee_msg;
 
 
                     // Names of joints: 
@@ -103,29 +104,21 @@ namespace prx
 
                     state_t* joints = state_space->alloc_point();
 
-                    // if(joints->at(14) == 2){
-                    //     ee_msg.command.push_back("CMD_GRIP");
-                    // }
-                    // else{
-                    //     ee_msg.command.push_back("CMD_RELEASE");
-                    // }
+                    if(joints->at(14) != prev){
 
-                    // pub_ee.publish(ee_msg);
+                        if(joints->at(14) == 2){
+                            ee_msg.command = "CMD_GRIP";
+                        }
+                        else{
+                            ee_msg.command = "CMD_RELEASE";
+                        }
 
-                    // double x = joints->at(15);
-                    // std::cout << x << std::endl;
-                    //  x = joints->at(14);  LEFT GRIPPER
-                    // std::cout << x << std::endl;
-                    //  x = joints->at(2);
-                    // std::cout << x << std::endl;
-                    //  x = joints->at(3);
-                    // std::cout << x << std::endl;
-                    //  x = joints->at(4);
-                    // std::cout << x << std::endl;
-                    //  x = joints->at(5);
-                    // std::cout << x << std::endl;
-                    //  x = joints->at(6);
-                    // std::cout << x << std::endl;
+                        pub_ee.publish(ee_msg);
+
+                        prev = joints->at(14);
+                    }
+
+
 
 
                     com_msg.names.push_back("left_s0");
