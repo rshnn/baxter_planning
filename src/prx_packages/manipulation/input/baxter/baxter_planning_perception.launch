@@ -22,7 +22,7 @@
 
 
   <rosparam ns="planning/task_planner/">
-    object_target: [0.75, 0.6, 0.90, 0, 0, 0, 1]
+    object_target: [0, 0.9, 1, 0, 0.7071, 0, 0.7071]
   </rosparam>
 
 
@@ -33,7 +33,6 @@
   <rosparam command="load" ns="planning/world_model/simulator/subsystems/red1">
     initial_state: [0.45, 0.4, 0.90, 0, 0, 0, 1]
   </rosparam>
-
   <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/red2">
     initial_state: [0.45, 0.6, 0.90, 0, 0, 0, 1]
   </rosparam>
@@ -88,7 +87,6 @@
 
 
 
-
   <rosparam ns="simulation/simulator/obstacles">
     table:
       type: obstacle
@@ -123,7 +121,6 @@
   <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/red1">
     template: "red_object"
   </rosparam>
-
   <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/red2">
     template: "red_object"
   </rosparam>
@@ -154,7 +151,6 @@
   <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/yellow2">
     template: "yellow_object"
   </rosparam>
-
 
 
 
@@ -252,7 +248,6 @@
           height: 0.14
           material: red
   </rosparam>
-
   <rosparam command="load" ns="simulation/blue_object" >
     type: movable_body
     object_type: cup
@@ -319,7 +314,6 @@
 
 
 
-
   <rosparam command="load" ns="planning/red_object" >
     type: movable_body
     object_type: cup
@@ -340,7 +334,6 @@
           height: 0.14
           material: red
   </rosparam>
-
   <rosparam command="load" ns="planning/blue_object" >
     type: movable_body
     object_type: cup
@@ -405,7 +398,6 @@
   </rosparam>
 
 
-
   <rosparam ns="planning/world_model/planning_contexts">
     manipulator_pc:
       default:
@@ -451,7 +443,6 @@
   <rosparam command="load" ns="planning/world_model/simulator/subsystems/red1">
     template: "red_object"
   </rosparam>
-
   <rosparam command="load" ns="planning/world_model/simulator/subsystems/red2">
     template: "red_object"
   </rosparam>
@@ -485,7 +476,6 @@
   <rosparam command="load" ns="planning/world_model/simulator/subsystems/yellow2">
     template: "yellow_object"
   </rosparam>
-
   <rosparam ns="planning/graph_query_template">
     type: manipulation_query
     query_type: add_query_points_collisions
@@ -557,7 +547,7 @@
   </rosparam>
 
 
-  <node name="planning" pkg="prx_planning" type="prx_planning" required="false" launch-prefix="gdb --args" output="screen" args="planning"/>
+  <node name="planning" pkg="prx_planning" type="prx_planning" required="false" launch-prefix="" output="screen" args="planning"/>
 
 
   <include file="$(find prx_input)/templates/visualization/visualization.launch"/>

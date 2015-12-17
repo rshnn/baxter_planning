@@ -4,6 +4,7 @@
 #include <unordered_map>
 
 #include <inttypes.h>
+#include <math.h>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -16,6 +17,20 @@
 #define SQ(x) (x)*(x)
 
 using namespace cv;
+
+bool compare_component_size(const Component& lhs, const Component& rhs) {
+	return (lhs.m.m00 < rhs.m.m00);
+}
+
+bool compare_component_position(const Component& lhs, const Component& rhs) {
+	if (abs(lhs.c_y - rhs.c_y) < 10) {
+		return (lhs.c_x < rhs.c_x);
+	}
+	else {
+		return (lhs.c_y < rhs.c_y);
+	}
+}
+
 
 Mat get_image(char *image_file, int &width, int &height) {
 	Mat cv_img;
@@ -52,7 +67,6 @@ Mat convert_to_greyscale(Mat image) {
 
 	// Total Gradient (approximate)
 	addWeighted( abs_grad_x, 0.5, abs_grad_y, 0.5, 0, grad );
-	imwrite("sobel.png", grad);	
 
 	// The following part is required because otherwise P[0] becomes 0
 	// and we get division by zero errors when computing the between-group variance.
@@ -74,7 +88,6 @@ Mat convert_to_greyscale(Mat image) {
 
 
 	Mat sub = greyscale-grad;
-	imwrite("sub.png", sub);
 	return sub;
 }
 
@@ -179,7 +192,7 @@ Mat threshold_image(Mat greyscale) {
 	return output;
 }
 
-Mat connected_components(Mat binarized, std::vector<uint16_t> &components) {
+Mat connected_components(Mat binarized, std::vector<Component> &components) {
 	Mat output = Mat(binarized.rows, binarized.cols, CV_16U, Scalar(0));
 	std::unordered_map<uint16_t, uint16_t> component_ids;
 	uint16_t top_id = 1;
@@ -249,7 +262,16 @@ Mat connected_components(Mat binarized, std::vector<uint16_t> &components) {
 	}
 
 	for (auto kv: new_ids) {
-		components.push_back(kv.second);
+		uint16_t component_value = kv.second;
+		Mat masked = mask_by_component(output, component_value*COMPONENT_SEPARATION_CONST);
+		Moments m = moments(masked, true);
+		bool upright = (abs((m.mu20 - m.mu02)/m.m00) < 50);
+		// centroids
+		double c_x = m.m10/m.m00;
+		double c_y = m.m01/m.m00;
+
+		Component c = {masked, m, c_x, c_y, component_value, upright};
+		components.push_back(c);
 	}
 
 	return output;
@@ -269,10 +291,6 @@ Mat mask_by_component(Mat componentized, uint16_t value) {
 		}
 	}
 	return output;
-}
-
-Scalar component_avg_color(Mat original, Mat component) {
-	return mean(original, component);
 }
 /*
 int main(int argc, char **argv) {

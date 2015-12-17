@@ -1,4 +1,5 @@
 #include <fstream>
+#include <algorithm>
 
 #include <ros/ros.h>
 #include <cv_bridge/cv_bridge.h>
@@ -114,11 +115,25 @@ public:
 
 	Mat output = threshold_image(greyscale);
 
-	std::vector<uint16_t> components;
+	std::vector<Component> components;
 	Mat component_output = connected_components(output, components);
 
 	Mat hsv_image(image.size(), image.type());
 	cvtColor(image, hsv_image, CV_BGR2HSV);
+
+	//Mat h_image(image.size(), CV_8UC1);
+	//Mat s_image(image.size(), CV_8UC1);
+	//Mat v_image(image.size(), CV_8UC1);
+	//for (int y = 0; y < height; y++) {
+	//	for (int x = 0; x < width; x++) {
+	//		h_image.at<uchar>(y, x) = hsv_image.at<Vec3b>(y,x)[0];
+	//		s_image.at<uchar>(y, x) = hsv_image.at<Vec3b>(y,x)[1];
+	//		v_image.at<uchar>(y, x) = hsv_image.at<Vec3b>(y,x)[2];
+	//	}
+	//}
+	//imshow("h", h_image);
+	//imshow("s", s_image);
+	//imshow("v", v_image);
 
 	Mat orientation = image.clone();
 
@@ -128,17 +143,20 @@ public:
 	output_file << "Image size: " << image.size() << std::endl;
 
 	std::vector<tf::Vector3> global_coords;
+	double object_pose[8][7];
 
+	std::sort(components.begin(), components.end(), compare_component_size);
 
+	std::vector<Component> biggest_components(components.end()-8, components.end());	
 
-
-  double object_pose[8][7];
-
+	std::sort(biggest_components.begin(), biggest_components.end(), compare_component_position);
 
 	int i = 0;
-	for (uint16_t c: components) {
-		Mat masked = mask_by_component(component_output, COMPONENT_SEPARATION_CONST*c);
-		Moments m = moments(masked, true);
+	for (Component c: biggest_components) {
+		auto m = c.m;
+		auto masked = c.masked;
+		auto c_x = c.c_x;
+		auto c_y = c.c_y;
 
 		double min_comp_size = masked.cols*masked.rows/400;
 		if (m.m00 < min_comp_size) {
@@ -147,16 +165,8 @@ public:
 		i++;
 		output_file << "Component ID: " << i << std::endl;
 
-		Scalar avg_color = component_avg_color(hsv_image, masked);
-		output_file << "Component HSV color: " << avg_color << std::endl;
-		output_file << "H^2 + S^2: " << SQ(avg_color[0]) + SQ(avg_color[1]) << std::endl;
-
 		int thickness = -1;
 		int lineType = 8;
-
-		// centroids
-		double c_x = m.m10/m.m00;
-		double c_y = m.m01/m.m00;
 
 		double axis = atan((2*m.mu11)/(m.mu20 - m.mu02))/2.0;
 
@@ -190,6 +200,12 @@ public:
 						Scalar::all(0), textThickness, 8);
 
 		tf::Vector3 global_frame = pixel_to_image_plane_transform(c_x, height-c_y, primary_x, primary_y, fx, fy, z);
+
+		global_frame.setZ(0.9);
+		if (c.upright) {
+			global_frame.setZ(0.9+0.07-0.01);
+		}
+
 		global_coords.push_back(global_frame);
 
 		// I'm not sure if these calculations are correct
@@ -201,44 +217,45 @@ public:
 		output_file << "centroid: " << c_x << ", " << c_y << std::endl;
 		output_file << "axis of orientation: " << axis << std::endl;
 		output_file << "eccentricity: " << eccentricity << std::endl;
-    output_file << "size: " << m.m00 << std::endl; 
+    		output_file << "size: " << m.m00 << std::endl; 
 		output_file << std::endl;
 
-    object_pose[i-1][0] = global_frame.getX();
-    object_pose[i-1][1] = global_frame.getY();
-    object_pose[i-1][2] = global_frame.getZ();
+		object_pose[i-1][0] = global_frame.getX();
+		object_pose[i-1][1] = global_frame.getY();
+		object_pose[i-1][2] = global_frame.getZ();
 
 
     // std::cout << i << " " << m.m00 << std::endl;
 
     // /* Standing upright */
-    // if(m.m00 <= 1600 ){
-    //  // std::cout << i << " Upright" << std::endl;
-    //   object_pose[i-1][3] = 0;
-    //   object_pose[i-1][4] = 0;
-    //   object_pose[i-1][5] = 0;
-    //   object_pose[i-1][6] = 1;
-    // }else{
+		if(c.upright ){
+     // std::cout << i << " Upright" << std::endl;
+			object_pose[i-1][3] = 0;
+			object_pose[i-1][4] = 0;
+			object_pose[i-1][5] = 0;
+			object_pose[i-1][6] = 1;
+		}
+		else{
     /* Lying on side */
       //  std::cout << i << " On side" << std::endl;
-      tf::Vector3 vert_vect = tf::Vector3(0, 0, 1);
-      tf::Vector3 vert_horiz = tf::Vector3(0, 1, 0);
+			tf::Vector3 vert_vect = tf::Vector3(0, 0, 1);
+			tf::Vector3 vert_horiz = tf::Vector3(0, 1, 0);
 
-      tf::Quaternion quat = tf::Quaternion(vert_vect, -axis);
+			tf::Quaternion quat = tf::Quaternion(vert_vect, -axis);
 
 
-      tf::Quaternion quat2 = tf::Quaternion(vert_horiz, M_PI/2.0);
+			tf::Quaternion quat2 = tf::Quaternion(vert_horiz, M_PI/2.0);
 
-      tf::Quaternion pose =  quat*quat2;
+			tf::Quaternion pose =  quat*quat2;
 
-      //std::cout << quat.getX() << std::endl;
+			//std::cout << quat.getX() << std::endl;
 
-      object_pose[i-1][3] = pose.getX();
-      object_pose[i-1][4] = pose.getY();
-      object_pose[i-1][5] = pose.getZ();
-      object_pose[i-1][6] = pose.getW();
+			object_pose[i-1][3] = pose.getX();
+			object_pose[i-1][4] = pose.getY();
+			object_pose[i-1][5] = pose.getZ();
+			object_pose[i-1][6] = pose.getW();
 
-   //}
+ 		}
 
 
 	}

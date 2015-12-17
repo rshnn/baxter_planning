@@ -1,16 +1,31 @@
 #ifndef THRESHOLD_HPP_
 #define THRESHOLD_HPP_
 
+#include <inttypes.h>
+
 #include <vector>
 #include <tuple>
 
 #include <opencv2/core/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 using namespace cv;
 
 #define COMPONENT_SEPARATION_CONST 7001
 
 #define SQ(x) (x)*(x)
+
+typedef struct component {
+	Mat masked;
+	Moments m;
+	double c_x;
+	double c_y;
+	uint16_t component_value;
+	bool upright;
+} Component;
+
+bool compare_component_size(const Component& lhs, const Component& rhs);
+bool compare_component_position(const Component& lhs, const Component& rhs);
 
 // get image
 
@@ -33,16 +48,7 @@ Mat threshold_image(Mat greyscale);
 
 // connectivity functions
 
-Mat connected_components(Mat binarized, std::vector<uint16_t> &components);
-
-
-// moment functions
-
-
-// misc functions
+Mat connected_components(Mat binarized, std::vector<Component> &components);
 
 Mat mask_by_component(Mat componentized, uint16_t value);
-
-Scalar component_avg_color(Mat original, Mat component);
-
 #endif // THRESHOLD_HPP_
