@@ -51,6 +51,7 @@ namespace prx
             {
                 input_path = pracsys_path + "/prx_packages/manipulation/input/baxter/";
                 execute_on_robot = false;
+                prev = 1;
             }
 
             void baxter_t::init(const parameter_reader_t* reader, const parameter_reader_t* template_reader)
@@ -117,9 +118,6 @@ namespace prx
 
                         prev = joints->at(14);
                     }
-
-
-
 
                     com_msg.names.push_back("left_s0");
                     com_msg.command.push_back(joints->at(0));
