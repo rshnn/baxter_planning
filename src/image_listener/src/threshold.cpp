@@ -265,7 +265,7 @@ Mat connected_components(Mat binarized, std::vector<Component> &components) {
 		uint16_t component_value = kv.second;
 		Mat masked = mask_by_component(output, component_value*COMPONENT_SEPARATION_CONST);
 		Moments m = moments(masked, true);
-		bool upright = (abs((m.mu20 - m.mu02)/m.m00) < 50);
+		bool upright = (abs((m.mu20 - m.mu02)/m.m00) < 100);
 		// centroids
 		double c_x = m.m10/m.m00;
 		double c_y = m.m01/m.m00;
