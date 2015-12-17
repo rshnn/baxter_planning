@@ -34,7 +34,8 @@ namespace prx
               protected:
 
                 virtual void create_spaces();
-
+                //bool isOpen = false;
+                int prev = 1; 
                 bool execute_on_robot;
                 ros::Publisher pub_left ;
                 ros::NodeHandle nh;

@@ -10,7 +10,7 @@
   <rosparam command="load" ns="simulation/simulator/subsystems/consumer" file="$(find prx_input)/templates/controllers/consumer.yaml"/>
   <rosparam command="load" ns="simulation/simulator/subsystems/consumer/subsystems/router/subsystems/manipulator" file="$(find manipulation)/input/baxter/baxter.yaml"/>
 
-  
+
   <rosparam ns="simulation/simulator/subsystems/consumer/subsystems/router" file="$(find prx_input)/templates/controllers/router.yaml" />
 
   <!--   The start state in simulation and planning, and target SE3 configuration of the cylinder object -->
@@ -520,7 +520,7 @@
             visualization_bodies: ["simulator/manipulator/head_sponge"]
             visualize_graph: false
             visualize_solutions: false
-            deserialize_file: "left_arm_graph.roadmap"
+            deserialize_file: "left_arm_graph_1000.roadmap"
             space_name: "left_arm_planning"
             planning_context_name: "left_arm"
             query:

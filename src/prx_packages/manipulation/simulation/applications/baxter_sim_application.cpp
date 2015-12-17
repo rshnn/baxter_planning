@@ -67,26 +67,14 @@ namespace prx
             }
 
 
-            void baxter_sim_application_t::detected_objects_callback(const image_listener::Num& msg){
+            void baxter_sim_application_t::detected_objects_callback(const image_listener::Num& msg)
+            {
                 PRX_ERROR_S("Placing detected objects in simulation.");
 
-                // int blue[2];
-                // int yellow[2];
-                // int green[2];
-                // int red[2];
                 std::string blue = ("blue");
                 std::string yellow = ("yellow");
                 std::string green = ("green");
                 std::string red = ("red");
-
-                // int i = 0;
-                // for(i=0; i<=8; i++){
-                //     if(!red.compare(msg.colors[i])){
-                //         std::cout << "Found red" << std::endl;
-                //     }
-                // }
-
-
 
 
                 std::vector<movable_body_plant_t* > objects;
@@ -95,26 +83,6 @@ namespace prx
                 manip_sim->get_movable_objects(objects);
 
                int OBJECT_INDEX;
-
-               /* RANDOMIZE OBJECT POSITIONS */
-                // for(OBJECT_INDEX = 0; OBJECT_INDEX < objects.size(); OBJECT_INDEX++){
-
-                //     const space_t* object_space = objects[OBJECT_INDEX]->get_state_space();
-                //     util::space_point_t * object = object_space->alloc_point();
-
-                //     // Update the state space of each with a point/vector that you change randomly within range 
-                //     double x = uniform_random(0.75, 0.95);
-                //     double y = uniform_random(0.40, 0.60);
-                //     double z = 0.87;
-
-                //     object->at(0) = x;
-                //     object->at(1) = y;
-                //     object->at(2) = z;
-                //     object_space->copy_from_point(object);
-                // }
-
-                
-
 
                 /* yellow */
                 OBJECT_INDEX = 0;
@@ -238,11 +206,12 @@ namespace prx
 
             void baxter_sim_application_t::planning_ready_callback(const std_msgs::String& msg)
             {
-                randomize_positions();
+                //randomize_positions();
                 std_msgs::String send_msg;
                 std::stringstream ss;
                 ss<<"start_manipulate";
                 send_msg.data = ss.str();
+                sleep(2);
                 manipulation_request_pub.publish(send_msg);
             }
 
@@ -260,7 +229,7 @@ namespace prx
                     PRX_ERROR_S("End of experiment!");
                     return;
                 }
-                randomize_positions();
+                //randomize_positions();
                 std_msgs::String send_msg;
                 std::stringstream ss;
                 ss<<"manipulate";
