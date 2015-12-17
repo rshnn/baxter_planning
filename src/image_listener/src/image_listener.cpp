@@ -217,7 +217,9 @@ public:
 		output_file << "centroid: " << c_x << ", " << c_y << std::endl;
 		output_file << "axis of orientation: " << axis << std::endl;
 		output_file << "eccentricity: " << eccentricity << std::endl;
-    		output_file << "size: " << m.m00 << std::endl; 
+    output_file << "isupright: " << (c.m.mu20-c.m.mu02)/c.m.m00 << std::endl;
+
+		output_file << "size: " << m.m00 << std::endl; 
 		output_file << std::endl;
 
 		object_pose[i-1][0] = global_frame.getX();
