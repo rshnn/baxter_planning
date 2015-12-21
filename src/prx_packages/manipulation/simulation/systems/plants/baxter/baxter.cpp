@@ -108,9 +108,11 @@ namespace prx
                     if(joints->at(14) != prev){
 
                         if(joints->at(14) == 2){
+                            ee_msg.id = 65664;
                             ee_msg.command = "CMD_GRIP";
                         }
                         else{
+                            ee_msg.id = 65664;
                             ee_msg.command = "CMD_RELEASE";
                         }
 

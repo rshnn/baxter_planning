@@ -27,6 +27,9 @@ private:
   image_transport::Subscriber         camera_sub_;
   image_transport::CameraSubscriber   caminfo_sub_;
 
+  ros::Subscriber                     manipulation_sub;
+  int                                 total_objects;
+
   tf::StampedTransform                tf_transform_;
   tf::TransformListener               tf_listener_;
 
@@ -40,7 +43,8 @@ public:
     //caminfo_sub_ = transporter_.subscribeCamera("/cameras/left_hand_camera/camera_info", 1, &ImageListener::info_callback, this);
     //object_publisher_ = nh_.advertise<std_msgs::String>("detected_objects", 1000);
     object_publisher_ = nh_.advertise<image_listener::Num>("detected_objects", 1000);
-   
+    manipulation_sub = nh_.subscribe("/manipulation_request", 1, &ImageListener::manipulation_callback, this);
+    total_objects = 9;
 
     std::cout << "Subscribed to left_hand_camera" << std::endl;
     ros::Duration(10).sleep();
@@ -51,6 +55,15 @@ public:
     std::cout<< "info_callback" << std::endl;
 
   }
+
+
+  void manipulation_callback(const std_msgs::String& msg){
+
+    total_objects--;
+    std::cout << "Object count: " <<total_objects << std::endl;
+
+  }
+
 
 
 
@@ -89,7 +102,7 @@ public:
     qz = tf_transform_.getRotation().z();
     qw = tf_transform_.getRotation().w();
 
-	std::cout << x << " " << y << " " << z << std::endl;
+	   //std::cout << x << " " << y << " " << z << std::endl;
 
     // The 3x3 rotation matrix and 3x1 translation vector.
     tf::Matrix3x3 homo_rotation = tf_transform_.getBasis();
@@ -313,7 +326,7 @@ public:
     object_publisher_.publish(message);
 
 
-    std::cout << "End image_callback" << std::endl;   
+    //std::cout << "End image_callback" << std::endl;   
   } 
 
 
