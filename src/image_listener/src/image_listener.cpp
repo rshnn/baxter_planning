@@ -88,6 +88,8 @@ public:
     qz = tf_transform_.getRotation().z();
     qw = tf_transform_.getRotation().w();
 
+	std::cout << x << " " << y << " " << z << std::endl;
+
     // The 3x3 rotation matrix and 3x1 translation vector.
     tf::Matrix3x3 homo_rotation = tf_transform_.getBasis();
     tf::Vector3 homo_translation = tf_transform_.getOrigin();
@@ -199,26 +201,32 @@ public:
 		putText(orientation, text, Point(c_x, c_y-20), fontFace, fontScale,
 						Scalar::all(0), textThickness, 8);
 
-		tf::Vector3 cam_frame = pixel_to_image_plane_transform(c_x, height-c_y, primary_x, primary_y, fx, fy, z+0.1);
-		tf::Vector3 global_frame = tf_transform_.invXform(cam_frame);
-		global_frame.setZ(global_frame.getZ()-1);
+		double zoffset = 1.0-0.9;
+		// the pixels we are detecting are at the top of the cylinder, but
+		// the default position of the cylinders are standing, and the z of their center is 0.9
+		//if (c.upright) {
+		//	zoffset-=0.07;
+		//}
+		//else {
+		//	zoffset-=0.02-0.07;
+		//}
+
+		tf::Vector3 global_frame = pixel_to_image_plane_transform(c_x, height-c_y, primary_x, primary_y, fx, fy, z+zoffset);
+		//tf::Vector3 global_frame = tf_transform_*cam_frame;
 		if (c.upright) {
-			global_frame.setZ(0.9+0.07-0.01);
+			global_frame.setZ(0.9);
+		}
+		else {
+			global_frame.setZ(0.9-0.07+0.02);
 		}
 
 		global_coords.push_back(global_frame);
 
-		// I'm not sure if these calculations are correct
-		double l_1 = m.mu20 - m.mu02 + sqrt(4*SQ(m.mu11) + SQ(m.mu20 - m.mu02));
-		double l_2 = m.mu20 - m.mu02 - sqrt(4*SQ(m.mu11) + SQ(m.mu20 - m.mu02));
-		double eccentricity = sqrt(1- l_2/l_1);
-
 		output_file << "estimated coordinates: " << global_frame.getX() << " " << global_frame.getY() << " " << global_frame.getZ() << std::endl;
 		output_file << "centroid: " << c_x << ", " << c_y << std::endl;
 		output_file << "axis of orientation: " << axis << std::endl;
-		output_file << "eccentricity: " << eccentricity << std::endl;
-    output_file << "isupright: " << (c.m.mu20-c.m.mu02)/c.m.m00 << std::endl;
-    output_file << "isuprightBOol: " << c.upright << std::endl;
+		output_file << "isupright: " << (c.m.mu20-c.m.mu02)/c.m.m00 << std::endl;
+		output_file << "isuprightBool: " << c.upright << std::endl;
 
 		output_file << "size: " << m.m00 << std::endl; 
 		output_file << std::endl;
