@@ -15,6 +15,7 @@
 
 #include "threshold.hpp"
 #include "pixel_coord_transform.hpp"
+#include "avg_color.hpp"
 
 using namespace cv;
 
@@ -108,6 +109,8 @@ public:
       return;
     }
 
+	boost::array<std::string, 8ul> colors;
+
 	Mat _image = camera_image->image.clone();
 	int width = _image.cols;
 	int height = _image.rows;
@@ -166,16 +169,24 @@ public:
 		}
 		i++;
 		output_file << "Component ID: " << i << std::endl;
-
+		double avg_h = avg_color(hsv_image, c);
+		output_file << "avg_h: " << avg_h << std::endl;
+		std::string color;
+		if (avg_h < 5) {
+			color = std::string("yellow");
+		}
+		else if (avg_h < 20) {
+			color = std::string("red");
+		}
+		else if (avg_h < 90) {
+			color = std::string("green");
+		}
+		else {
+			color = std::string("blue");
+		}
+		colors[i-1] = color;
 		int thickness = -1;
 		int lineType = 8;
-
-		double axis = atan((2*m.mu11)/(m.mu20 - m.mu02))/2.0;
-
-		// see http://www.via.cornell.edu/ece547/text/survey.pdf
-		if (m.mu20 - m.mu02 <= 0) {
-			axis+= M_PI/2.0;
-		}
 
 		circle( orientation,
 			Point(c_x, c_y),
@@ -184,7 +195,8 @@ public:
 			thickness,
 			lineType );
 
-		int axisLength = m.m00/100;
+		double axis = c.axis_angle;
+		double axisLength = c.major_axis;
 
 		line( orientation,
 			Point(c_x, c_y),
@@ -287,7 +299,7 @@ public:
     image_listener::Num message;
 
     //Cant figure out why, but I cant pass the arrays declared above^ directly into the message.  probably some type casting needed or something.
-    message.colors = {"red", "yellow", "blue", "red", "yellow", "blue", "red", "yellow"};
+    message.colors = colors;
     message.object1 = {object_pose[0][0], object_pose[0][1], object_pose[0][2], object_pose[0][3], object_pose[0][4], object_pose[0][5], object_pose[0][6]};
     message.object2 = {object_pose[1][0], object_pose[1][1], object_pose[1][2], object_pose[1][3], object_pose[1][4], object_pose[1][5], object_pose[1][6]};
     message.object3 = {object_pose[2][0], object_pose[2][1], object_pose[2][2], object_pose[2][3], object_pose[2][4], object_pose[2][5], object_pose[2][6]};

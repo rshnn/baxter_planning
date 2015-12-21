@@ -20,6 +20,9 @@ typedef struct component {
 	Moments m;
 	double c_x;
 	double c_y;
+	double major_axis;
+	double minor_axis;
+	double axis_angle;
 	uint16_t component_value;
 	bool upright;
 } Component;

@@ -270,7 +270,20 @@ Mat connected_components(Mat binarized, std::vector<Component> &components) {
 		double c_x = m.m10/m.m00;
 		double c_y = m.m01/m.m00;
 
-		Component c = {masked, m, c_x, c_y, component_value, upright};
+		double l_1 = ((m.mu20 + m.mu02) + sqrt(SQ(m.mu20 - m.mu02) + 4*SQ(m.mu11)) )/2;
+		double l_2 = ((m.mu20 + m.mu02) - sqrt(SQ(m.mu20 - m.mu02) + 4*SQ(m.mu11)) )/2;
+		double major_axis = 2*sqrt(l_1/m.m00);
+		double minor_axis = 2*sqrt(l_2/m.m00);
+
+		double axis_angle = atan((2*m.mu11)/(m.mu20 - m.mu02))/2.0;
+
+		// see http://www.via.cornell.edu/ece547/text/survey.pdf
+		if (m.mu20 - m.mu02 <= 0) {
+			axis_angle += M_PI/2.0;
+		}
+
+
+		Component c = {masked, m, c_x, c_y, major_axis, minor_axis, axis_angle, component_value, upright};
 		components.push_back(c);
 	}
 
