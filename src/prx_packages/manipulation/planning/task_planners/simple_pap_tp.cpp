@@ -161,7 +161,7 @@ namespace prx
                 manipulation_model->use_context(manipulation_context_name);
                 std::vector<movable_body_plant_t* > objects;
                 manipulation_model->get_objects(objects);
-                int OBJECT_INDEX = objects.size()-1;//This would be ideally coming from the DECISION MAKER of your implementation, ie. the logic that tells you what object to pick.
+                int OBJECT_INDEX = objects.size()-7;//This would be ideally coming from the DECISION MAKER of your implementation, ie. the logic that tells you what object to pick.
                 const space_t* object_space = objects[OBJECT_INDEX]->get_state_space();
 
                 manipulator = manipulation_model->get_current_manipulation_info()->manipulator; //The pointer to the manipulator (Baxter)  
